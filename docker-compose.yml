@@ -1,0 +1,24 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+
+    container_name: ecommerce-mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: e_commerce
+
+    ports:
+      - "3306:3306"
+
+  app:
+    build: .
+
+    container_name: ecommerce-api
+
+    depends_on:
+      - mysql
+
+    ports:
+      - "8080:8080"

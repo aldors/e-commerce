@@ -1,0 +1,85 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg, #f4f6f9, #e8ecf3);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+#historial-contenedor {
+  width: 100%;
+  max-width: 700px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.15);
+  padding: 25px;
+  animation: fadeIn 0.8s ease;
+}
+
+#historial-contenedor h2 {
+  margin-bottom: 20px;
+  color: #1f3c88;
+  text-align: center;
+  border-bottom: 2px solid #1f3c88;
+  padding-bottom: 10px;
+}
+
+/* Tarjeta de orden */
+.orden-card {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.orden-tarjeta:hover {
+  transform: translateY(-3px);
+}
+
+.orden-info p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.orden-productos h3 {
+  margin-top: 15px;
+  color: #1f3c88;
+}
+
+.orden-productos ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.orden-productos li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.orden-productos li:last-child {
+  border-bottom: none;
+}
+
+.producto-nombre {
+  font-weight: bold;
+  color: #333;
+}
+
+.producto-detalle {
+  color: #555;
+  font-size: 0.9em;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

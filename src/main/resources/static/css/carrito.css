@@ -1,0 +1,120 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg, #f4f6f9, #e8ecf3);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+.carrito-contenedor {
+  width: 100%;
+  max-width: 600px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.15);
+  padding: 25px;
+  animation: fadeIn 0.8s ease;
+}
+
+.carrito-contenedor h2 {
+  margin-bottom: 20px;
+  color: #1f3c88;
+  text-align: center;
+  border-bottom: 2px solid #1f3c88;
+  padding-bottom: 10px;
+}
+
+.carrito-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.item-tarjeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.item-tarjeta:hover {
+  transform: translateY(-3px);
+}
+
+.item-info h3 {
+  margin: 0 0 8px 0;
+  color: #1f3c88;
+}
+
+.item-info p {
+  margin: 4px 0;
+  color: #333;
+}
+
+/* Botón eliminar */
+.btn-eliminar {
+  background: none;
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0px 2px 6px rgba(231,76,60,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(231,76,60,0.4);
+}
+
+/* Total */
+.carrito-total {
+  margin-top: 20px;
+  text-align: right;
+  border-top: 1px solid #ddd;
+  padding-top: 15px;
+}
+
+.carrito-total h3 {
+  color: #1f3c88;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Botón Checkout */
+.btn-checkout {
+  margin-top: 15px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #1f3c88, #3b5998); /* degradado elegante */
+  color: #ffffff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-checkout:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0px 6px 16px rgba(0,0,0,0.3);
+}
+
+a{
+  text-decoration: none;
+  
+}

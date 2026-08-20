@@ -1,0 +1,56 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #e8f0f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.registro-contenedor {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  width: 250px;
+  text-align: center;
+}
+
+.inputs-registro input,
+#boton-registro {
+  width: 100%;              /* todos iguales */
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 5px;
+  box-sizing: border-box;   /* asegura que padding no rompa el ancho */
+}
+
+.inputs-registro input {
+  border: 1px solid #ccc;
+}
+
+#boton-registro {
+  background-color: #1f3c88;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.6s ease; /* efecto suave */
+}
+
+#boton-registro:hover {
+  background-color: #162d66; /* se oscurece */
+}
+
+#Login {
+  display: block;              /* ocupa toda la línea */
+  margin-top: 12px;
+  text-decoration: none;
+  color: #1f3c88;              /* azul consistente con el botón */
+  font-size: 0.9em;
+  transition: color 0.3s ease; /* efecto suave */
+}
+
+#Login:hover {
+  color: #162d66;              /* se oscurece */
+}
+

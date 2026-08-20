@@ -1,0 +1,115 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg, #f4f6f9, #e8ecf3);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+.config-contenedor {
+  width: 100%;
+  max-width: 600px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.15);
+  padding: 25px;
+  animation: fadeIn 0.8s ease;
+}
+
+.config-contenedor h2 {
+  margin-bottom: 20px;
+  color: #1f3c88;
+  text-align: center;
+  border-bottom: 2px solid #1f3c88;
+  padding-bottom: 10px;
+}
+
+/* Botones de opciones */
+.config-opciones {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 25px;
+}
+
+.config-btn {
+  background: #1f3c88;
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.config-btn:hover {
+  background-color: #162d66;
+  transform: scale(1.05);
+}
+
+/* Formularios */
+.config-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formulario-tarjeta {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.formulario-tarjeta h3 {
+  color: #1f3c88;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.formulario-tarjeta input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.formulario-tarjeta input:focus {
+  border-color: #1f3c88;
+  outline: none;
+}
+
+/* Botón Guardar */
+.btn-guardar {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-guardar:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+/* Ocultar formularios */
+.hidden {
+  display: none;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

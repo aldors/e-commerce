@@ -1,0 +1,63 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg, #f4f6f9, #e8ecf3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.perfil-contenedor {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.perfil-tarjeta {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.15);
+  padding: 25px;
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+}
+
+.perfil-tarjeta h2 {
+  margin-bottom: 20px;
+  color: #1f3c88;
+  font-weight: bold;
+  border-bottom: 2px solid #1f3c88;
+  padding-bottom: 10px;
+}
+
+.perfil-info {
+  margin-top: 15px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.label {
+  font-weight: bold;
+  color: #333;
+}
+
+.value {
+  color: #555;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ddd; /* división sutil */
+  margin: 0;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración</title>
+  <link rel="stylesheet" href="../css/configuracion.css">
+</head>
+<body>
+  <section class="config-contenedor">
+    <h2>Configuración de Cuenta</h2>
+
+    <!-- Opciones -->
+    <div class="config-opciones">
+      <button class="config-btn" data-target="usuario">Cambiar Usuario</button>
+      <button class="config-btn" data-target="correo">Cambiar Correo</button>
+      <button class="config-btn" data-target="password">Cambiar Contraseña</button>
+    </div>
+
+    <!-- Formularios -->
+    <div class="config-formulario">
+      <!-- Usuario -->
+      <form class="formulario-tarjeta form-usuario hidden" id="form-usuario">
+        <h3>Cambiar Usuario</h3>
+        <input type="text" placeholder="Nuevo usuario">
+        <button type="submit" class="btn-guardar">Guardar</button>
+      </form>
+
+      <!-- Correo -->
+      <form class="formulario-tarjeta form-correo hidden" id="form-correo">
+        <h3>Cambiar Correo</h3>
+        <input type="email" placeholder="Nuevo correo">
+        <button type="submit" class="btn-guardar">Guardar</button>
+      </form>
+
+      <!-- Contraseña -->
+      <form class="formulario-tarjeta form-password hidden" id="form-password">
+        <h3>Cambiar Contraseña</h3>
+        <input type="password" placeholder="Contraseña actual">
+        <input type="password" placeholder="Nueva contraseña">
+        <button type="submit" class="btn-guardar">Guardar</button>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    const buttons = document.querySelectorAll(".config-btn");
+    const forms = document.querySelectorAll(".formulario-tarjeta");
+
+    buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        // Ocultar todos los formularios
+        forms.forEach(form => form.classList.add("hidden"));
+        // Mostrar el formulario correspondiente
+        const target = btn.getAttribute("data-target");
+        document.getElementById(`form-${target}`).classList.remove("hidden");
+    });
+    });
+
+  </script>
+
+  <script src="../js/configuracion.js"></script>
+</body>
+</html>

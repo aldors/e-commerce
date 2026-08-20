@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio - Sistema</title>
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+  <!-- Barra superior -->
+  <header class="navbar">
+    <h1 class="logo">Mi Sistema</h1>
+    <div class="header-iconos">
+      <!-- Ícono carrito -->
+      <a href="carrito.html" class="carrito-icono">🛒</a>
+      <!-- Ícono perfil -->
+      <div class="perfil-menu">
+        <img src="../imagenes/usuario-sin-foto.png" alt="Usuario" class="perfil-icono" id="perfil-btn">
+        <div class="dropdown" id="dropdown">
+          <a href="perfil.html">Perfil</a>
+          <hr>
+          <a href="configuracion.html">Configuración</a>
+          <hr>
+          <button class="logout" id="logout">Cerrar Sesión</button>
+        </div>
+      </div>
+
+      <!-- Contenedor para el botón admin -->
+      <div id="admin-contenedor"></div>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="contenido">
+    <section class="bienvenida">
+      <h2 id="mensaje-bienvenida"></h2>
+      <p>Explora los productos disponibles.</p>
+    </section>
+
+    <!-- Productos en tarjetas -->
+    <section class="productos" id="productos-contenedor">
+
+    </section>
+  </main>
+
+  <!-- JS simple para abrir/cerrar dropdown -->
+  <script>
+    const profileBtn = document.getElementById("perfil-btn");
+    const dropdown = document.getElementById("dropdown");
+
+    profileBtn.addEventListener("click", () => {
+      dropdown.classList.toggle("show");
+    });
+
+    // Cierra si se hace click fuera
+    document.addEventListener("click", (e) => {
+      if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove("show");
+      }
+    });
+  </script>
+
+  <script src="../js/logout.js"></script>
+  <script src="../js/index.js"></script>
+</body>
+</html>

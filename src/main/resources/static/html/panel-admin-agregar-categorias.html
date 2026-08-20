@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin - Agregar Productos</title>
+  <link rel="stylesheet" href="../css/panel-admin-agregar-productos.css">
+</head>
+
+<body>
+  <h1>PANEL ADMIN - AGREGAR CATEGORIAS</h1>
+  <a href="panel-admin-agregar-productos.html">Regresar</a>
+
+  <div class="formulario">
+    <form id="formCategoria">
+      <label class="label" for="nombre">Nombre de la categoria:</label>
+      <input class="formulario-inputs" id="nombre" type="text" placeholder="Tecnología">
+
+
+      <button type="submit" class="btn-submit">Agregar Categoria</button>
+    </form>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla">
+      <caption>CATEGORIAS</caption>
+      <thead class="encabezado">
+        <tr>
+          <th>Nombre</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="filas">
+        <tr>
+          <td></td>
+          <td class="acciones">
+            <button class="btn-accion btn-actualizar">Actualizar</button>
+            <button class="btn-accion btn-eliminar">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="../js/admin-categorias.js"></script>
+
+</body>
+
+</html>

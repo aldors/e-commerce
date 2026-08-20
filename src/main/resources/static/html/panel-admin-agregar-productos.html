@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin - Agregar Productos</title>
+  <link rel="stylesheet" href="../css/panel-admin-agregar-productos.css">
+</head>
+
+<body>
+  <h1>PANEL ADMIN - AGREGAR PRODUCTOS</h1> 
+  <a href="panel-admin-agregar-categorias.html">Agregar categorias</a>
+
+  <div class="formulario">
+    <form id="formProducto">
+      <label class="label" for="nombre">Nombre del producto:</label>
+      <input class="formulario-inputs" id="nombre" type="text" placeholder="Laptop">
+
+      <label class="label" for="descripcion">Descripción:</label>
+      <input class="formulario-inputs" id="descripcion" type="text" placeholder="Laptop Gamer">
+
+      <label class="label" for="precio">Precio:</label>
+      <input class="formulario-inputs" id="precio" type="number" step="0.01" min="0" placeholder="15000.0">
+
+      <label class="label" for="stock">Stock:</label>
+      <input class="formulario-inputs" id="stock" type="number" placeholder="50">
+
+      <label class="label" for="categoria">Categoría del producto:</label>
+      <select id="categoria" class="formulario-inputs"></select>
+
+      <div id="activoContainer" style="display:none;">
+        <label>
+          <input type="checkbox" id="activo"> Activo
+        </label>
+      </div>
+
+      <button type="submit" class="btn-submit">Agregar Producto</button>
+    </form>
+  </div>
+
+  <div class="contenedor-tabla">
+    <table class="tabla">
+      <caption>PRODUCTOS</caption>
+      <thead class="encabezado">
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Categoría</th>
+          <th>Disponible</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="filas">
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="disponible"></td>
+          <td class="acciones">
+            <button class="btn-accion btn-actualizar">Actualizar</button>
+            <button class="btn-accion btn-eliminar">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="../js/admin-productos.js"></script>
+
+</body>
+
+</html>
