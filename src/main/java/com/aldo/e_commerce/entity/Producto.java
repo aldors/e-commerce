@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,5 +43,13 @@ public class Producto {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    private Boolean activo = true;
+    private Boolean activo;
+
+    @PrePersist
+    public void prePersist() {
+
+        if (this.activo == null) {
+            this.activo = true;
+        }
+    }
 }
