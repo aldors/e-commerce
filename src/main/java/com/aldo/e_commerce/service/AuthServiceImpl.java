@@ -2,7 +2,9 @@ package com.aldo.e_commerce.service;
 
 import java.time.LocalDateTime;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,6 +51,9 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Value("${jwt.expirationRefreshToken}")
+    private long jwtExpirationRefreshToken;
+
     @Override 
     public RegistroResponse registro(RegistroRequest request){
 
@@ -68,6 +73,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public AuthResponse login(LoginRequest request){
 
         authenticationManager.authenticate(
@@ -80,14 +86,19 @@ public class AuthServiceImpl implements AuthService {
         // Aqui se usa el UserDetailsByEmailService para cargar el usuario por email en lugar de por username, ya que en este caso el email es el identificador único del usuario
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
 
+        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
+        .orElseThrow(() -> new UsuarioNoEncontradoException());
+        
+        refreshTokenRepository.deleteByUsuario(usuario);
+
         String accessToken = jwtService.generateAccessToken(userDetails);
         String refreshToken = jwtService.generateRefreshToken(userDetails);
 
         RefreshToken tokenEntity = RefreshToken.builder()
                 .token(refreshToken)
                 // ¿Por que se hace asi ahora? Porque el RefreshToken ya no tiene un campo 'nombre' que almacena el email del usuario, sino que ahora tiene una relación con la entidad Usuario, por lo que se puede obtener el usuario directamente a través de esa relación. Esto hace que el diseño sea más limpio y orientado a objetos, ya que el RefreshToken ahora tiene una referencia directa al Usuario al que pertenece, en lugar de almacenar solo un campo de texto con el email.
-                .usuario(usuarioRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("Usuario no encontrado")))
-                .expirationDate(LocalDateTime.now().plusDays(1)) // Establecer la fecha de expiración del refresh token
+                .usuario(usuario)
+                .expirationDate(LocalDateTime.now().plusSeconds(jwtExpirationRefreshToken / 1000)) // Establecer la fecha de expiración del refresh token
                 .build();
 
         refreshTokenRepository.save(tokenEntity);
@@ -96,6 +107,7 @@ public class AuthServiceImpl implements AuthService {
     }
     
     @Override
+    @Transactional(noRollbackFor = {DisabledException.class, RefreshTokenExpiradoException.class})
     public AuthResponse refreshToken(String refreshToken){
 
         RefreshToken tokenEntity = refreshTokenRepository.findByToken(refreshToken)
@@ -110,6 +122,11 @@ public class AuthServiceImpl implements AuthService {
         String email = usuario.getEmail(); // Obtener el email del usuario
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+        if (!userDetails.isEnabled()) {
+            refreshTokenRepository.deleteByUsuario(usuario);
+            throw new DisabledException("La cuenta está desactivada");
+        }
 
         // ¿Debo quitar esto? No, es importante mantener esta validación para asegurarnos de que el refresh token es válido y no ha sido manipulado. Aunque el token ya existe en la base de datos, es posible que haya sido modificado o que el usuario haya cambiado su contraseña, lo que invalidaría el token. Por lo tanto, es recomendable mantener esta validación para garantizar la seguridad del sistema. 
         if(!jwtService.isValid(refreshToken, userDetails)){
