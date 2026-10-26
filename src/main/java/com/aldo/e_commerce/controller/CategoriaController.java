@@ -63,8 +63,8 @@ public class CategoriaController {
         )
 })
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/crear")
-    //@PreAuthorize("hasRole('ADMIN')") // Solo los usuarios con el rol ADMIN pueden acceder a este endpoint
     public ResponseEntity<ApiResponsee<CategoriaResponse>> crear(@Valid @RequestBody CategoriaRequest categoriaRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponsee<>(true, "Categoria creada correctamente", categoriaService.crear(categoriaRequest)));
     }
@@ -85,6 +85,7 @@ public class CategoriaController {
         )
 })
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listar")
     public ResponseEntity<ApiResponsee<List<CategoriaResponse>>> listar(){
         return ResponseEntity.ok(new ApiResponsee<>(true, "Categorias listadas", categoriaService.listar()));
@@ -114,8 +115,8 @@ public class CategoriaController {
         )
 })
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/actualizar/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponsee<CategoriaResponse>> actualizar(@Valid @RequestBody CategoriaRequest categoriaRequest, @PathVariable Long id){
         return ResponseEntity.ok(new ApiResponsee<>(true, "Categoria actualizada correctamente", categoriaService.actualizar(categoriaRequest, id)));
     }
@@ -144,8 +145,8 @@ public class CategoriaController {
         )
 })
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/eliminar/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
         categoriaService.eliminar(id);
         return ResponseEntity.noContent().build();

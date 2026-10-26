@@ -3,6 +3,7 @@ package com.aldo.e_commerce.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,7 @@ public class OrdenController {
         )
 })
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/checkout")
     public ResponseEntity<ApiResponsee<OrdenResponse>> checkout(){
         return ResponseEntity.ok(new ApiResponsee<>(true, "Checkout realizado correctamente", ordenService.checkout()));
@@ -65,6 +67,8 @@ public class OrdenController {
                 description = "No autenticado"
         )
 })
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<ApiResponsee<List<OrdenResponse>>> historial(){
         return ResponseEntity.ok(new ApiResponsee<>(true, "Historial de ordenes", ordenService.historial()));

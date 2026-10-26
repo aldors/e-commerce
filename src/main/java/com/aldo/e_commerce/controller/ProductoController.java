@@ -61,8 +61,8 @@ public class ProductoController {
         )
 })
     
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/crear")
-    //@PreAuthorize("hasRole('ADMIN')") // Solo los usuarios con el rol ADMIN pueden acceder a este endpoint
     public ResponseEntity<ApiResponsee<ProductoResponse>> crear(@Valid @RequestBody ProductoRequest productoRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponsee<>(true, "Producto creado correctamente", productoService.crear(productoRequest)));
     }
@@ -87,7 +87,7 @@ public class ProductoController {
         )
 })
 
-    // Investigar el por que esto ya esta protegido, es decir solamente para USERs si no lo tengo en el securityConfig
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/listar")
     public ResponseEntity<ApiResponsee<Page<ProductoResponse>>> listar(
         @RequestParam(defaultValue = "0") int page,
@@ -136,8 +136,8 @@ public class ProductoController {
         )
 })
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/actualizar/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponsee<ProductoResponse>> actualizar(@Valid @RequestBody ProductoRequest productoRequest, @PathVariable Long id){
         return ResponseEntity.ok(new ApiResponsee<>(true, "Producto actualizado correctamente", productoService.actualizar(productoRequest, id)));
     }
@@ -166,8 +166,8 @@ public class ProductoController {
         )
 })
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/eliminar/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
         productoService.eliminar(id);
         return ResponseEntity.noContent().build();

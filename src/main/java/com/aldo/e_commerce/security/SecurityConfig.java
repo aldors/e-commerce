@@ -38,16 +38,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        //para productos
+                        .requestMatchers("/auth/registro", "/auth/login", "/auth/refresh-token").permitAll()
+                        .requestMatchers("/auth/logout").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/auth/actualizar-nombre", "/auth/actualizar-email", "/auth/actualizar-contraseña").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/carrito/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/categorias/**").hasRole("ADMIN")
                         .requestMatchers("/productos/crear", "/productos/actualizar/**", "/productos/eliminar/**").hasRole("ADMIN")
-                        //para categorias
-                        .requestMatchers("/categorias/crear", "/categorias/actualizar/**", "/categorias/eliminar/**").hasRole("ADMIN")
-                        //Para swagger
+                        .requestMatchers("/productos/listar**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/ordenes/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/auth/registro", "/auth/login", "/auth/refresh-token", "/auth/logout").permitAll()
-                        .requestMatchers("/auth/usuarios/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/auth/admins/**").hasRole("ADMIN")
-                        .requestMatchers("/auth/actualizar-nombre/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

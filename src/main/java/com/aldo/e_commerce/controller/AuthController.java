@@ -2,6 +2,7 @@ package com.aldo.e_commerce.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    
+        
     private final AuthService authService;
 
 @Operation(
@@ -122,6 +123,7 @@ public class AuthController {
         )
 })
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest refreshTokenRequest) {
         authService.logout(refreshTokenRequest.getRefreshToken());
@@ -129,10 +131,7 @@ public class AuthController {
     }
 
 
-    //************************************
-    // Endpoints de nuevas funcionalidades
-    //************************************
-
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/actualizar-nombre")
     public ResponseEntity<Void> actualizarNombre(@Valid @RequestBody NombreUsuarioRequest nombreUsuariorequest){
 
@@ -141,6 +140,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/actualizar-email")
     public ResponseEntity<Void> actualizarEmail(@Valid @RequestBody EmailUsuarioRequest emailUsuariorequest){
 
@@ -149,52 +149,13 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/actualizar-contraseña")
     public ResponseEntity<Void> actualizarContraseña(@Valid @RequestBody ContraseñaUsuarioRequest contraseñalUsuariorequest){
 
         authService.actualizarContraseña(contraseñalUsuariorequest);
         
         return ResponseEntity.ok().build();
-    }
-
-
-    // Endpoints de prueba para verificar roles
-
-@Operation(
-        summary = "Prueba",
-        description = "Permite comprobar que usuarios y administradores pueden acceder a este endpoint"
-)
-@ApiResponses({
-        @ApiResponse(
-                responseCode = "401",
-                description = "No autenticado"
-        )
-})
-
-    @GetMapping("/usuarios")
-    public String usuarios() {
-        return "Eres un usuario autenticado";
-    }
-
-
-@Operation(
-        summary = "Prueba",
-        description = "Permite comprobar que únicamente administradores pueden acceder a este endpoint"
-)
-@ApiResponses({
-        @ApiResponse(
-                responseCode = "401",
-                description = "No autenticado"
-        ),
-        @ApiResponse(
-                responseCode = "403",
-                description = "No autorizado"
-        )
-})
-
-    @GetMapping("/admins")
-    public String admins() {
-        return "Eres un administrador autenticado";
     }
     
 }

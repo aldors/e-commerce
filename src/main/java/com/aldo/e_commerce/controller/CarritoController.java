@@ -2,6 +2,7 @@ package com.aldo.e_commerce.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,7 @@ public class CarritoController {
         )
 })
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<ApiResponsee<CarritoResponse>> obtenerCarrito(){
         return ResponseEntity.ok().body(new ApiResponsee<>(true, "Carrito obtenido con éxito", carritoService.obtenerCarrito()));
@@ -73,6 +75,7 @@ public class CarritoController {
         )
 })
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<ApiResponsee<CarritoResponse>> agregarProducto(@RequestBody AddProductoRequest addProductoRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponsee<>(true, "Producto agregado al carrito correctamente", carritoService.agregarProducto(addProductoRequest)));
@@ -97,6 +100,7 @@ public class CarritoController {
                 description = "No autenticado"
         )
 })
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{productoId}")
     public ResponseEntity<CarritoResponse> eliminarProucto(@PathVariable Long productoId){
         carritoService.eliminarProducto(productoId);
