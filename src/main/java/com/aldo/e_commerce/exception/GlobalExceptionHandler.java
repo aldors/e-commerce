@@ -3,6 +3,8 @@ package com.aldo.e_commerce.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +45,32 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
+    }
+
+    // Cuenta desactivada
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ApiError> handleDisabled(DisabledException ex) {
+
+        ApiError apiError = new ApiError(
+                HttpStatus.FORBIDDEN.value(),
+                "Cuenta desactivada",
+                List.of(ex.getMessage())
+        );
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
+    }
+
+    // Cuenta bloqueada
+    @ExceptionHandler(LockedException.class)
+    public ResponseEntity<ApiError> handleLocked(LockedException ex) {
+
+        ApiError apiError = new ApiError(
+                HttpStatus.FORBIDDEN.value(),
+                "Cuenta bloqueada",
+                List.of(ex.getMessage())
+        );
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
     }
 
     // Manejo general de excepciones no controladas
