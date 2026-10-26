@@ -37,6 +37,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
+                 .claim("type", "access")
                 // Esto sirve para poder ver el nombre del usuario en la pestaña de perfil
                 .claim("nombre", usuario.getNombre().toUpperCase())
                 .issuedAt(new Date())
@@ -49,6 +50,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
+                 .claim("type", "refresh")
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpirationRefreshToken))
                 .signWith(getKey())
@@ -57,6 +59,10 @@ public class JwtService {
 
     public String extractEmail(String token) {
         return extractClaims(token).getSubject();
+    }
+
+    public String extractTokenType(String token) {
+        return extractClaims(token).get("type", String.class);
     }
 
     public boolean isValid(String token, UserDetails userDetails) {
