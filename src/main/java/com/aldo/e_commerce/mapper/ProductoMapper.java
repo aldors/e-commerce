@@ -14,7 +14,6 @@ public class ProductoMapper {
                 .precio(request.getPrecio())
                 .stock(request.getStock())
                 .categoria(categoria)
-                .activo(true)
                 .build();
     }
 

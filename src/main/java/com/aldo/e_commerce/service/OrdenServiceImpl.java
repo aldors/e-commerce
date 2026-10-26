@@ -1,6 +1,5 @@
 package com.aldo.e_commerce.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +61,6 @@ public class OrdenServiceImpl implements OrdenService{
         Orden orden = Orden.builder()
                 .usuario(usuario)
                 .estado(EstadoOrden.PENDIENTE)
-                .fecha(LocalDateTime.now())
                 .build();
 
         List<OrdenDetalle> detalles = new ArrayList<>();

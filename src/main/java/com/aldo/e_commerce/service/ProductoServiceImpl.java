@@ -115,8 +115,10 @@ public class ProductoServiceImpl implements ProductoService {
         producto.setDescripcion(request.getDescripcion());
         producto.setPrecio(request.getPrecio());
         producto.setStock(request.getStock());
-        // Esto lo agregamos para poder reactivar el producto despues de eliminarlo con el soft delete
-        producto.setActivo(request.getActivo());
+        
+        if (request.getActivo() != null) {
+            producto.setActivo(request.getActivo());
+        }
 
         // Si la categoria del producto existente no coindice con la nueva, es decir que
         // se quiere actualizar la categoria.
