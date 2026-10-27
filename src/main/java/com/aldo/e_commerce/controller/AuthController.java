@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aldo.e_commerce.dto.apiResponse.ApiResponsee;
 import com.aldo.e_commerce.dto.authResponse.AuthResponse;
+import com.aldo.e_commerce.dto.authResponse.MeResponse;
 import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.ContraseñaUsuarioRequest;
 import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.EmailUsuarioRequest;
 import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.NombreUsuarioRequest;
@@ -130,6 +131,11 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/me")
+    public ResponseEntity<MeResponse> me() {
+        return ResponseEntity.ok(authService.me());
+    }
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/actualizar-nombre")

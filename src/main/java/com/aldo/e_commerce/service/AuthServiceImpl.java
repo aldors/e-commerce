@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.aldo.e_commerce.dto.authResponse.AuthResponse;
+import com.aldo.e_commerce.dto.authResponse.MeResponse;
 import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.ContraseñaUsuarioRequest;
 import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.EmailUsuarioRequest;
 import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.NombreUsuarioRequest;
@@ -35,6 +36,7 @@ import com.aldo.e_commerce.mapper.AuthMapper;
 import com.aldo.e_commerce.mapper.RegistroMapper;
 import com.aldo.e_commerce.repository.RefreshTokenRepository;
 import com.aldo.e_commerce.repository.UsuarioRepository;
+import com.aldo.e_commerce.security.CurrentUserService;
 import com.aldo.e_commerce.security.JwtService;
 import com.aldo.e_commerce.service.interfaces.AuthService;
 
@@ -50,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserDetailsService userDetailsService;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final CurrentUserService currentUserService;
 
     @Value("${jwt.expirationRefreshToken}")
     private long jwtExpirationRefreshToken;
@@ -144,6 +147,12 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenRepository.deleteByToken(refreshToken);
     }
 
+    @Override
+    public MeResponse me() {
+
+        Usuario usuario = currentUserService.obtenerUsuarioActual();
+        return new MeResponse(usuario.getNombre(), usuario.getEmail(), usuario.getRole());
+    }
 
     //*******
     // Nuevas funcionalidades: cambiar nombre de usuario, email y posiblemente contraseña

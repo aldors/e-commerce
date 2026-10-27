@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/registro", "/auth/login", "/auth/refresh-token").permitAll()
-                        .requestMatchers("/auth/logout").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/auth/logout", "/auth/me").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/auth/actualizar-nombre", "/auth/actualizar-email", "/auth/actualizar-contraseña").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/carrito/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/categorias/**").hasRole("ADMIN")
