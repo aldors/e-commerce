@@ -3,7 +3,6 @@ package com.aldo.e_commerce.service;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.aldo.e_commerce.dto.addProductoAlCarrito.AddProductoRequest;
@@ -15,11 +14,11 @@ import com.aldo.e_commerce.entity.Usuario;
 import com.aldo.e_commerce.exception.ProductoNoDisponibleException;
 import com.aldo.e_commerce.exception.ProductoNoEncontradoException;
 import com.aldo.e_commerce.exception.StockInsuficienteException;
-import com.aldo.e_commerce.exception.UsuarioNoEncontradoException;
 import com.aldo.e_commerce.mapper.CarritoMapper;
 import com.aldo.e_commerce.repository.CarritoRepository;
 import com.aldo.e_commerce.repository.ProductoRepository;
 import com.aldo.e_commerce.repository.UsuarioRepository;
+import com.aldo.e_commerce.security.CurrentUserService;
 import com.aldo.e_commerce.service.interfaces.CarritoService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,12 +30,7 @@ public class CarritoServieImpl implements CarritoService{
     private final CarritoRepository carritoRepository;
     private final ProductoRepository productoRepository;
     private final UsuarioRepository usuarioRepository;
-
-    private Usuario getUsuarioActual() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsuarioNoEncontradoException());
-    }
+    private final CurrentUserService currentUserService;
 
     private Carrito getOrCreateCarrito(Usuario usuario) {
         return carritoRepository.findByUsuarioId(usuario.getId())
@@ -51,14 +45,14 @@ public class CarritoServieImpl implements CarritoService{
 
     @Override
     public CarritoResponse obtenerCarrito() {
-        Usuario usuario = getUsuarioActual();
+        Usuario usuario = currentUserService.obtenerUsuarioActual();
         Carrito carrito = getOrCreateCarrito(usuario);
         return CarritoMapper.toResponse(carrito);
     }
 
     @Override
     public CarritoResponse agregarProducto(AddProductoRequest request) {
-        Usuario usuario = getUsuarioActual();
+        Usuario usuario = currentUserService.obtenerUsuarioActual();
         Carrito carrito = getOrCreateCarrito(usuario);
 
         // Para saber si existe en la tabla productos el producto que se quiere agregar al carrito
@@ -115,7 +109,7 @@ public class CarritoServieImpl implements CarritoService{
 
     @Override
     public CarritoResponse eliminarProducto(Long productoId) {
-        Usuario usuario = getUsuarioActual();
+        Usuario usuario = currentUserService.obtenerUsuarioActual();
         Carrito carrito = getOrCreateCarrito(usuario);
 
         carrito.getItems().removeIf(i -> i.getProducto().getId().equals(productoId));

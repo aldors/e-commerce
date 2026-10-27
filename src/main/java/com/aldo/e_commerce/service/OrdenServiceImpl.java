@@ -3,7 +3,6 @@ package com.aldo.e_commerce.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.aldo.e_commerce.dto.orden.OrdenResponse;
@@ -18,12 +17,12 @@ import com.aldo.e_commerce.exception.CarritoInexistenteException;
 import com.aldo.e_commerce.exception.CarritoVacioException;
 import com.aldo.e_commerce.exception.ProductoNoDisponibleException;
 import com.aldo.e_commerce.exception.StockInsuficienteException;
-import com.aldo.e_commerce.exception.UsuarioNoEncontradoException;
 import com.aldo.e_commerce.mapper.OrdenMapper;
 import com.aldo.e_commerce.repository.CarritoItemRepository;
 import com.aldo.e_commerce.repository.CarritoRepository;
 import com.aldo.e_commerce.repository.OrdenRepository;
 import com.aldo.e_commerce.repository.UsuarioRepository;
+import com.aldo.e_commerce.security.CurrentUserService;
 import com.aldo.e_commerce.service.interfaces.OrdenService;
 
 import jakarta.transaction.Transactional;
@@ -38,17 +37,11 @@ public class OrdenServiceImpl implements OrdenService{
     private final CarritoRepository carritoRepository;
     private final CarritoItemRepository carritoItemRepository;
     private final UsuarioRepository usuarioRepository;
-
-    private Usuario getUsuarioActual() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsuarioNoEncontradoException());
-    }
+    private final CurrentUserService currentUserService;
 
     @Override
     public OrdenResponse checkout() {
-        Usuario usuario = getUsuarioActual();
+        Usuario usuario = currentUserService.obtenerUsuarioActual();
 
         //Aqui se intenta obtener el carrito del usuarios, no se usa getOrCreateCarrito (no se por que)
         Carrito carrito = carritoRepository.findByUsuarioId(usuario.getId())
@@ -111,7 +104,7 @@ public class OrdenServiceImpl implements OrdenService{
 
     @Override
     public List<OrdenResponse> historial() {
-        Usuario usuario = getUsuarioActual();
+        Usuario usuario = currentUserService.obtenerUsuarioActual();
 
         return ordenRepository.findByUsuarioId(usuario.getId())
                 .stream()
