@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.aldo.e_commerce.entity.Usuario;
 import com.aldo.e_commerce.repository.UsuarioRepository;
 
 import io.jsonwebtoken.Claims;
@@ -32,14 +31,10 @@ public class JwtService {
     private final UsuarioRepository usuarioRepository;
 
     public String generateAccessToken(UserDetails userDetails) {
-        Usuario usuario = usuarioRepository.findByEmail(userDetails.getUsername()).orElseThrow();
-
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
-                 .claim("type", "access")
-                // Esto sirve para poder ver el nombre del usuario en la pestaña de perfil
-                .claim("nombre", usuario.getNombre().toUpperCase())
+                .claim("type", "access")
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpirationAccessToken))
                 .signWith(getKey())
@@ -50,7 +45,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
-                 .claim("type", "refresh")
+                .claim("type", "refresh")
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpirationRefreshToken))
                 .signWith(getKey())
