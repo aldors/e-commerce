@@ -329,4 +329,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(apiError);
     }
+
+    @ExceptionHandler(RefreshTokenNoValidoException.class)
+    public ResponseEntity<ApiError> handleRefreshTokenNoValido(RefreshTokenNoValidoException ex) {
+            
+        ApiError apiError = new ApiError(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Refresh Token inválido",
+                List.of(ex.getMessage())
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
+    }
 }

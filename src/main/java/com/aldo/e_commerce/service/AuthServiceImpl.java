@@ -31,6 +31,7 @@ import com.aldo.e_commerce.exception.NuevoEmailDiferenteException;
 import com.aldo.e_commerce.exception.NuevoNombreDiferenteException;
 import com.aldo.e_commerce.exception.RefreshTokenExpiradoException;
 import com.aldo.e_commerce.exception.RefreshTokenNoEncontradoException;
+import com.aldo.e_commerce.exception.RefreshTokenNoValidoException;
 import com.aldo.e_commerce.exception.UsuarioNoEncontradoException;
 import com.aldo.e_commerce.mapper.AuthMapper;
 import com.aldo.e_commerce.mapper.RegistroMapper;
@@ -133,7 +134,7 @@ public class AuthServiceImpl implements AuthService {
 
         // ¿Debo quitar esto? No, es importante mantener esta validación para asegurarnos de que el refresh token es válido y no ha sido manipulado. Aunque el token ya existe en la base de datos, es posible que haya sido modificado o que el usuario haya cambiado su contraseña, lo que invalidaría el token. Por lo tanto, es recomendable mantener esta validación para garantizar la seguridad del sistema. 
         if(!jwtService.isValid(refreshToken, userDetails)){
-            throw new RuntimeException("Refresh token no válido");
+            throw new RefreshTokenNoValidoException();
         }
 
         String newAccessToken = jwtService.generateAccessToken(userDetails);
