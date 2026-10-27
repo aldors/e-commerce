@@ -178,6 +178,7 @@ public class AuthServiceImpl implements AuthService {
 
     // Este metodo es basico, necesita qe el front haga un logout automatico, para actualizar el jwt que contiene email antiguo
     @Override
+    @Transactional
     public void actualizarEmail(EmailUsuarioRequest request) {
         
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -196,9 +197,23 @@ public class AuthServiceImpl implements AuthService {
         usuario.setEmail(request.getEmail());
 
         usuarioRepository.save(usuario);
+
+        refreshTokenRepository.deleteByUsuario(usuario);
+
+        UserDetails updatedUser = userDetailsService.loadUserByUsername(usuario.getEmail());
+
+        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(
+                updatedUser,
+                authentication.getCredentials(),
+                updatedUser.getAuthorities()
+        );
+
+        newAuthentication.setDetails(authentication.getDetails());
+        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
     }
     
     @Override
+    @Transactional
     public void actualizarContraseña(ContraseñaUsuarioRequest request){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -219,5 +234,7 @@ public class AuthServiceImpl implements AuthService {
         usuario.setPassword(nuevaPasswordEncriptada);
         
         usuarioRepository.save(usuario);
+
+        refreshTokenRepository.deleteByUsuario(usuario);
     }
 }
