@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.aldo.e_commerce.entity.Usuario;
+import com.aldo.e_commerce.exception.UsuarioNoAutenticadoException;
 import com.aldo.e_commerce.exception.UsuarioNoEncontradoException;
 import com.aldo.e_commerce.repository.UsuarioRepository;
 
@@ -21,7 +22,7 @@ public class CurrentUserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())){
-            throw new RuntimeException("Usuario no autenticado");
+            throw new UsuarioNoAutenticadoException();
         }
 
         String email = authentication.getName();

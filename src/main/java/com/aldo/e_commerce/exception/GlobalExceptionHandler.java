@@ -317,4 +317,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(apiError);
     }
+
+    @ExceptionHandler(UsuarioNoAutenticadoException.class)
+    public ResponseEntity<ApiError> handleUsuarioNoAutenticado(UsuarioNoAutenticadoException ex) {
+
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "Usuario no autenticado",
+                List.of(ex.getMessage())
+        );
+
+        return ResponseEntity.badRequest().body(apiError);
+    }
 }
