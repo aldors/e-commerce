@@ -72,6 +72,14 @@ public class ProductoServiceImpl implements ProductoService {
             throw new CampoDeOrdenamientoInvalidoException(sortBy);
         }
 
+        if (page < 0) {
+            throw new IllegalArgumentException("El número de página no puede ser negativo");
+        }
+
+        if (size < 1) {
+            throw new IllegalArgumentException("El tamaño de página debe ser mayor a 0");
+        }
+
         if (size > 10) {
             throw new TamañoMaximoDePaginaException();
         }
