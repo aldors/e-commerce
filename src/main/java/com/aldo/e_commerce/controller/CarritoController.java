@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(
@@ -77,7 +78,7 @@ public class CarritoController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<ApiResponsee<CarritoResponse>> agregarProducto(@RequestBody AddProductoRequest addProductoRequest){
+    public ResponseEntity<ApiResponsee<CarritoResponse>> agregarProducto(@Valid @RequestBody AddProductoRequest addProductoRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponsee<>(true, "Producto agregado al carrito correctamente", carritoService.agregarProducto(addProductoRequest)));
     }
 

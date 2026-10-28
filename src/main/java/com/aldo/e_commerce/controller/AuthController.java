@@ -104,7 +104,7 @@ public class AuthController {
 })
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<ApiResponsee<AuthResponse>> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+    public ResponseEntity<ApiResponsee<AuthResponse>> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         return ResponseEntity.ok(new ApiResponsee<>(true, "Access token generado correctamente,", authService.refreshToken(refreshTokenRequest.getRefreshToken())));
     }
 
