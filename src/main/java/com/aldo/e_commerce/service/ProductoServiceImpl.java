@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aldo.e_commerce.dto.producto.ProductoRequest;
 import com.aldo.e_commerce.dto.producto.ProductoResponse;
@@ -53,6 +54,7 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ProductoResponse> listar(
             int page, // Numero de página
             int size, // Numero de elementos por página
@@ -115,6 +117,7 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    @Transactional
     public ProductoResponse actualizar(ProductoRequest request, Long id) {
 
         Producto producto = productoRepository.findById(id).orElseThrow(() -> new ProductoNoEncontradoException(id));
@@ -147,6 +150,7 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
 
         Producto producto = productoRepository.findById(id)

@@ -3,6 +3,7 @@ package com.aldo.e_commerce.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aldo.e_commerce.dto.categoria.CategoriaRequest;
 import com.aldo.e_commerce.dto.categoria.CategoriaResponse;
@@ -36,6 +37,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CategoriaResponse> listar() {
         return categoriaRepository.findAll()
                 .stream()
@@ -44,6 +46,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
+    @Transactional
     public CategoriaResponse actualizar(CategoriaRequest request, Long id) {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new CategoriaNoEncontradaException(id));
@@ -56,6 +59,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new CategoriaNoEncontradaException(id));

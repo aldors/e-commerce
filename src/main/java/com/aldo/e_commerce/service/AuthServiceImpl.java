@@ -160,6 +160,7 @@ public class AuthServiceImpl implements AuthService {
     //*******
     
     @Override
+    @Transactional
     public void actualizarNombre(NombreUsuarioRequest request){
         
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aldo.e_commerce.dto.carrito.AddProductoRequest;
 import com.aldo.e_commerce.dto.carrito.CarritoResponse;
@@ -44,6 +45,7 @@ public class CarritoServieImpl implements CarritoService{
     }
 
     @Override
+    @Transactional
     public CarritoResponse obtenerCarrito() {
         Usuario usuario = currentUserService.obtenerUsuarioActual();
         Carrito carrito = getOrCreateCarrito(usuario);
@@ -51,6 +53,7 @@ public class CarritoServieImpl implements CarritoService{
     }
 
     @Override
+    @Transactional
     public CarritoResponse agregarProducto(AddProductoRequest request) {
         Usuario usuario = currentUserService.obtenerUsuarioActual();
         Carrito carrito = getOrCreateCarrito(usuario);
@@ -108,6 +111,7 @@ public class CarritoServieImpl implements CarritoService{
     }
 
     @Override
+    @Transactional
     public CarritoResponse eliminarProducto(Long productoId) {
         Usuario usuario = currentUserService.obtenerUsuarioActual();
         Carrito carrito = getOrCreateCarrito(usuario);
