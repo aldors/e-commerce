@@ -1,4 +1,4 @@
-package com.aldo.e_commerce.dto.apiResponse;
+package com.aldo.e_commerce.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

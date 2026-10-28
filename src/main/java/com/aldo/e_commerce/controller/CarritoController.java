@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aldo.e_commerce.dto.addProductoAlCarrito.AddProductoRequest;
-import com.aldo.e_commerce.dto.apiResponse.ApiResponsee;
+import com.aldo.e_commerce.dto.carrito.AddProductoRequest;
 import com.aldo.e_commerce.dto.carrito.CarritoResponse;
+import com.aldo.e_commerce.dto.response.ApiResponsee;
 import com.aldo.e_commerce.service.interfaces.CarritoService;
 
 import io.swagger.v3.oas.annotations.Operation;

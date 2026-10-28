@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aldo.e_commerce.dto.apiResponse.ApiResponsee;
 import com.aldo.e_commerce.dto.categoria.CategoriaRequest;
 import com.aldo.e_commerce.dto.categoria.CategoriaResponse;
+import com.aldo.e_commerce.dto.response.ApiResponsee;
 import com.aldo.e_commerce.service.interfaces.CategoriaService;
 
 import io.swagger.v3.oas.annotations.Operation;

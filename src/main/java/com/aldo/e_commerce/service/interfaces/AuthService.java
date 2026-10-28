@@ -1,13 +1,13 @@
 package com.aldo.e_commerce.service.interfaces;
 
-import com.aldo.e_commerce.dto.authResponse.AuthResponse;
-import com.aldo.e_commerce.dto.authResponse.MeResponse;
-import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.ContraseñaUsuarioRequest;
-import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.EmailUsuarioRequest;
-import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.NombreUsuarioRequest;
-import com.aldo.e_commerce.dto.loginAndLogout.LoginRequest;
-import com.aldo.e_commerce.dto.registro.RegistroRequest;
-import com.aldo.e_commerce.dto.registro.RegistroResponse;
+import com.aldo.e_commerce.dto.auth.AuthResponse;
+import com.aldo.e_commerce.dto.auth.ContraseñaUsuarioRequest;
+import com.aldo.e_commerce.dto.auth.EmailUsuarioRequest;
+import com.aldo.e_commerce.dto.auth.LoginRequest;
+import com.aldo.e_commerce.dto.auth.MeResponse;
+import com.aldo.e_commerce.dto.auth.NombreUsuarioRequest;
+import com.aldo.e_commerce.dto.auth.RegistroRequest;
+import com.aldo.e_commerce.dto.auth.RegistroResponse;
 
 public interface AuthService {
     public RegistroResponse registro(RegistroRequest request);

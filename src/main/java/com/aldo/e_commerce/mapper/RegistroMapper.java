@@ -1,7 +1,7 @@
 package com.aldo.e_commerce.mapper;
 
-import com.aldo.e_commerce.dto.registro.RegistroRequest;
-import com.aldo.e_commerce.dto.registro.RegistroResponse;
+import com.aldo.e_commerce.dto.auth.RegistroRequest;
+import com.aldo.e_commerce.dto.auth.RegistroResponse;
 import com.aldo.e_commerce.entity.Role;
 import com.aldo.e_commerce.entity.Usuario;
 

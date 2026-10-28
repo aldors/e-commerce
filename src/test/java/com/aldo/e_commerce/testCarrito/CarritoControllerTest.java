@@ -20,7 +20,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.aldo.e_commerce.controller.CarritoController;
-import com.aldo.e_commerce.dto.addProductoAlCarrito.AddProductoRequest;
+import com.aldo.e_commerce.dto.carrito.AddProductoRequest;
 import com.aldo.e_commerce.dto.carrito.CarritoResponse;
 import com.aldo.e_commerce.security.CustomUserDetailsService;
 import com.aldo.e_commerce.security.JwtService;

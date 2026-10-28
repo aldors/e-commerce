@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aldo.e_commerce.dto.apiResponse.ApiResponsee;
 import com.aldo.e_commerce.dto.orden.OrdenResponse;
+import com.aldo.e_commerce.dto.response.ApiResponsee;
 import com.aldo.e_commerce.service.interfaces.OrdenService;
 
 import io.swagger.v3.oas.annotations.Operation;

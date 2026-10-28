@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.aldo.e_commerce.dto.addProductoAlCarrito.AddProductoRequest;
+import com.aldo.e_commerce.dto.carrito.AddProductoRequest;
 import com.aldo.e_commerce.dto.carrito.CarritoResponse;
 import com.aldo.e_commerce.entity.Carrito;
 import com.aldo.e_commerce.entity.CarritoItem;

@@ -1,4 +1,4 @@
-package com.aldo.e_commerce.dto.addProductoAlCarrito;
+package com.aldo.e_commerce.dto.carrito;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Positive;

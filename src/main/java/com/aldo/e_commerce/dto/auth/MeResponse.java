@@ -1,4 +1,4 @@
-package com.aldo.e_commerce.dto.authResponse;
+package com.aldo.e_commerce.dto.auth;
 
 import com.aldo.e_commerce.entity.Role;
 

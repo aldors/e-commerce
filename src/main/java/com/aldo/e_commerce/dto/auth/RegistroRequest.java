@@ -1,4 +1,4 @@
-package com.aldo.e_commerce.dto.registro;
+package com.aldo.e_commerce.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

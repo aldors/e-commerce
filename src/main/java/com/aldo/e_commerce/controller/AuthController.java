@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aldo.e_commerce.dto.apiResponse.ApiResponsee;
-import com.aldo.e_commerce.dto.authResponse.AuthResponse;
-import com.aldo.e_commerce.dto.authResponse.MeResponse;
-import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.ContraseñaUsuarioRequest;
-import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.EmailUsuarioRequest;
-import com.aldo.e_commerce.dto.dtosUsuarioContraseñaEmail.NombreUsuarioRequest;
-import com.aldo.e_commerce.dto.loginAndLogout.LoginRequest;
-import com.aldo.e_commerce.dto.loginAndLogout.LogoutRequest;
-import com.aldo.e_commerce.dto.refreshToken.RefreshTokenRequest;
-import com.aldo.e_commerce.dto.registro.RegistroRequest;
-import com.aldo.e_commerce.dto.registro.RegistroResponse;
+import com.aldo.e_commerce.dto.auth.AuthResponse;
+import com.aldo.e_commerce.dto.auth.ContraseñaUsuarioRequest;
+import com.aldo.e_commerce.dto.auth.EmailUsuarioRequest;
+import com.aldo.e_commerce.dto.auth.LoginRequest;
+import com.aldo.e_commerce.dto.auth.LogoutRequest;
+import com.aldo.e_commerce.dto.auth.MeResponse;
+import com.aldo.e_commerce.dto.auth.NombreUsuarioRequest;
+import com.aldo.e_commerce.dto.auth.RefreshTokenRequest;
+import com.aldo.e_commerce.dto.auth.RegistroRequest;
+import com.aldo.e_commerce.dto.auth.RegistroResponse;
+import com.aldo.e_commerce.dto.response.ApiResponsee;
 import com.aldo.e_commerce.service.interfaces.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;

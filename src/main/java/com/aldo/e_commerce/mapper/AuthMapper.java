@@ -1,6 +1,6 @@
 package com.aldo.e_commerce.mapper;
 
-import com.aldo.e_commerce.dto.authResponse.AuthResponse;
+import com.aldo.e_commerce.dto.auth.AuthResponse;
 
 public class AuthMapper {
     
