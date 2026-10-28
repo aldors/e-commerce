@@ -12,7 +12,7 @@ public class RegistroMapper {
     
     public static Usuario toEntity(RegistroRequest request) {
         return Usuario.builder()
-                .nombre(request.getNombre().toLowerCase()) // Para que todos lo nombres se guarden en minusculas
+                .nombre(request.getNombre())
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .role(Role.USER)
