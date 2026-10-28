@@ -14,6 +14,10 @@ public class ProductoSpecification {
                 return criteriaBuilder.conjunction();
             }
 
+            if (root.get("categoria") == null) {
+                return criteriaBuilder.disjunction();
+            }
+
             return criteriaBuilder.equal(
                     root.get("categoria").get("nombre"),
                     categoria
@@ -29,6 +33,10 @@ public class ProductoSpecification {
                 return criteriaBuilder.conjunction();
             }
 
+            if (minPrecio < 0) {
+                return criteriaBuilder.conjunction();
+            }
+
             return criteriaBuilder.greaterThanOrEqualTo(
                     root.get("precio"),
                     minPrecio
@@ -41,6 +49,10 @@ public class ProductoSpecification {
         return (root, query, criteriaBuilder) -> {
 
             if (maxPrecio == null) {
+                return criteriaBuilder.conjunction();
+            }
+
+            if (maxPrecio < 0) {
                 return criteriaBuilder.conjunction();
             }
 
