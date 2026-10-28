@@ -16,11 +16,13 @@ import com.aldo.e_commerce.enums.EstadoOrden;
 import com.aldo.e_commerce.exception.CarritoInexistenteException;
 import com.aldo.e_commerce.exception.CarritoVacioException;
 import com.aldo.e_commerce.exception.ProductoNoDisponibleException;
+import com.aldo.e_commerce.exception.ProductoNoEncontradoException;
 import com.aldo.e_commerce.exception.StockInsuficienteException;
 import com.aldo.e_commerce.mapper.OrdenMapper;
 import com.aldo.e_commerce.repository.CarritoItemRepository;
 import com.aldo.e_commerce.repository.CarritoRepository;
 import com.aldo.e_commerce.repository.OrdenRepository;
+import com.aldo.e_commerce.repository.ProductoRepository;
 import com.aldo.e_commerce.repository.UsuarioRepository;
 import com.aldo.e_commerce.security.CurrentUserService;
 import com.aldo.e_commerce.service.interfaces.OrdenService;
@@ -37,6 +39,7 @@ public class OrdenServiceImpl implements OrdenService{
     private final CarritoRepository carritoRepository;
     private final CarritoItemRepository carritoItemRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ProductoRepository productoRepository;
     private final CurrentUserService currentUserService;
 
     @Override
@@ -62,7 +65,8 @@ public class OrdenServiceImpl implements OrdenService{
 
         for (CarritoItem item : carrito.getItems()) {
 
-            Producto producto = item.getProducto();
+            Producto producto = productoRepository.findByIdForUpdate(item.getProducto().getId())
+                    .orElseThrow(() -> new ProductoNoEncontradoException(item.getProducto().getId()));
 
             // Validar la disponibilidad del producto (NO SE SI ESTE CORRECTO AÚN)
             if(!producto.getActivo()){
@@ -98,6 +102,7 @@ public class OrdenServiceImpl implements OrdenService{
 
         // Vaciar carrito
         carrito.getItems().clear();
+        carritoRepository.save(carrito);
 
         return OrdenMapper.toResponse(ordenGuardada);
     }
