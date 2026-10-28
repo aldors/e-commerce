@@ -1,6 +1,6 @@
 package com.aldo.e_commerce.dto.auth;
 
-import com.aldo.e_commerce.entity.Role;
+import com.aldo.e_commerce.enums.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

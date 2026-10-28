@@ -1,5 +1,7 @@
 package com.aldo.e_commerce.entity;
 
+import com.aldo.e_commerce.enums.Role;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
