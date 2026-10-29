@@ -133,8 +133,8 @@ public class AuthController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
-    public ResponseEntity<MeResponse> me() {
-        return ResponseEntity.ok(authService.me());
+    public ResponseEntity<ApiResponsee<MeResponse>> me() {
+        return ResponseEntity.ok(new ApiResponsee<>(true, "Información del usuario", authService.me()));
     }
 
     @PreAuthorize("isAuthenticated()")
