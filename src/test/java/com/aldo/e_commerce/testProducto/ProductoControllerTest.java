@@ -72,6 +72,7 @@ public class ProductoControllerTest {
                 15000.0,
                 10,
                 "Tecnologia",
+                true,
                 true
         );
 
@@ -102,6 +103,7 @@ public class ProductoControllerTest {
                 15000.0,
                 10,
                 "Tecnologia",
+                true,
                 true
         );
 
@@ -143,6 +145,7 @@ public class ProductoControllerTest {
                 20000.0,
                 5,
                 "Tecnologia",
+                true,
                 true
         );
 

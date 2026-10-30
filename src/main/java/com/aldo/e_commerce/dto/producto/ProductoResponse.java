@@ -31,4 +31,6 @@ public class ProductoResponse {
     // del producto
     private Boolean activo;
 
+    private Boolean disponible;
+
 }

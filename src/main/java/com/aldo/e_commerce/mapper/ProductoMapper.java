@@ -18,6 +18,8 @@ public class ProductoMapper {
     }
 
     public static ProductoResponse toResponse(Producto producto) {
+        boolean disponible = producto.getActivo() && producto.getStock() != null && producto.getStock() > 0;
+
         return new ProductoResponse(
                 producto.getId(),
                 producto.getNombre(),
@@ -26,6 +28,8 @@ public class ProductoMapper {
                 producto.getStock(),
                 producto.getCategoria().getNombre(),
                 // Agregado recientemente para permitir ver la disponibilidad del producto
-                producto.getActivo());
+                producto.getActivo(),
+                disponible
+            );
     }
 }
