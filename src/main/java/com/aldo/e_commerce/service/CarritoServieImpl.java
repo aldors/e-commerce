@@ -72,29 +72,16 @@ public class CarritoServieImpl implements CarritoService{
         .filter(i -> i.getProducto().getId().equals(producto.getId()))
         .findFirst();
 
-        // El stock aqui no se descuenta, y eso genera problemas, por eso se hace esto.
-        /*
-        stock 10
-        se agregan 4
-        stock no se descuenta, sigue habiendo 10
-        se agregan 10 al carrito
-        ERROR: stock es 10 y se quieren agregar 14 unidades
+        int cantidadEnMiCarrito = itemExistente.map(CarritoItem::getCantidad).orElse(0);
+        int cantidadSolicitada = request.getCantidad();
+        int totalQueQuedaria = cantidadEnMiCarrito + cantidadSolicitada;
 
-        y eso se controla en la siguiente línea
-        */
-        int nuevaCantidad = itemExistente
-            .map(i -> i.getCantidad() + request.getCantidad())
-            .orElse(request.getCantidad());
-        
-        // No se podra agregar al carrito una cantidad de un producto mayor a la que hay en stock de ese producto
-        if(nuevaCantidad > producto.getStock()){
-            throw new StockInsuficienteException(producto.getNombre(), producto.getStock());
+        if (totalQueQuedaria > producto.getStock()) {
+            throw new StockInsuficienteException(producto.getNombre(), producto.getStock(), cantidadEnMiCarrito, cantidadSolicitada);
         }
 
         if (itemExistente.isPresent()) {
-            itemExistente.get().setCantidad(
-                    itemExistente.get().getCantidad() + request.getCantidad()
-            );
+            itemExistente.get().setCantidad(totalQueQuedaria);
         } else {
             CarritoItem nuevoItem = CarritoItem.builder()
                     .carrito(carrito)
