@@ -10,4 +10,6 @@ public class CarritoItemResponse {
     private String nombre;
     private Integer cantidad;
     private Double precio;
+    private Integer stock;
+    private Boolean activo;
 }

@@ -14,7 +14,9 @@ public class CarritoMapper {
                 item.getProducto().getId(),
                 item.getProducto().getNombre(),
                 item.getCantidad(),
-                item.getProducto().getPrecio()
+                item.getProducto().getPrecio(),
+                item.getProducto().getStock(),
+                item.getProducto().getActivo()
         );
     }
 
