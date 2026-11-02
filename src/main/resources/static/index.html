@@ -1,0 +1,1058 @@
+﻿
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Mercado Prime: encuentra productos y realiza tus compras fácilmente.">
+
+    <title>Mercado Prime</title>
+
+    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <script>
+        const savedTheme = localStorage.getItem("theme");
+
+        if (savedTheme) {
+            document.documentElement.dataset.theme = savedTheme;
+        }
+    </script>
+
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/modals.css">
+    <link rel="stylesheet" href="./css/responsive.css">
+</head>
+
+<body>
+
+    <!-- ============================= -->
+    <!-- ACCESIBILIDAD                 -->
+    <!-- ============================= -->
+
+    <a href="#catalogo" class="skip-link">
+        Saltar al contenido
+    </a>
+
+
+    <!-- ============================= -->
+    <!-- NAVEGACIÓN                    -->
+    <!-- ============================= -->
+
+    <header class="site-header" id="app-header"></header>
+
+
+    <!-- ============================= -->
+    <!-- CONTENIDO PRINCIPAL           -->
+    <!-- ============================= -->
+
+    <main id="catalogo" class="page-shell">
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero__copy">
+
+                <span class="eyebrow">
+                    Mercado Prime
+                </span>
+
+                <h1>
+                    Todo lo que buscas,
+                    <span>en un solo lugar.</span>
+                </h1>
+
+                <p>
+                    Descubre nuestros productos y disfruta
+                    de una experiencia de compra sencilla.
+                </p>
+
+                <button
+                    class="btn btn--dark"
+                    type="button"
+                    data-scroll-catalog
+                >
+                    Explorar catálogo
+                </button>
+
+            </div>
+
+            <div class="hero__art">
+                <div class="hero__shopping-bag">
+                    <div class="hero__bag-handle"></div>
+                    <div class="hero__bag-content">
+                        <span>MP</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- CATÁLOGO -->
+
+        <section id="catalogo-section" class="catalog-section">
+
+            <div class="catalog-section__header">
+
+                <div>
+                    <span class="section-eyebrow">
+                        Explora nuestros productos
+                    </span>
+
+                    <h2>Catálogo</h2>
+                </div>
+
+                <div id="catalog-meta"></div>
+
+            </div>
+
+            <div
+                id="page-feedback"
+                class="page-feedback"
+                aria-live="polite"
+            ></div>
+
+            <div id="products-grid" class="products-grid"></div>
+
+            <nav
+                id="catalog-pagination"
+                class="pagination"
+                aria-label="Paginación del catálogo"
+                hidden
+            ></nav>
+
+        </section>
+
+    </main>
+
+
+    <!-- ============================= -->
+    <!-- FOOTER                        -->
+    <!-- ============================= -->
+
+    <footer class="site-footer">
+
+        <div class="site-footer__content">
+
+            <p>
+                © <span id="year"></span> Mercado Prime
+            </p>
+
+            <nav class="site-footer__links" aria-label="Enlaces del pie de página">
+
+                <a href="#catalogo-section">
+                    Catálogo
+                </a>
+
+                <button type="button" data-footer-login>
+                    Mi perfil
+                </button>
+
+                <button type="button" data-footer-orders>
+                    Mis compras
+                </button>
+
+            </nav>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ============================= -->
+    <!-- ESTRUCTURA GENERAL DEL MODAL  -->
+    <!-- ============================= -->
+
+    <div id="modal-root">
+
+        <div
+            class="modal-backdrop"
+            id="modal-backdrop"
+            hidden
+        >
+
+            <section
+                class="modal"
+                id="app-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+                tabindex="-1"
+            >
+
+                <header class="modal__header">
+
+                    <div class="modal__heading">
+
+                        <span
+                            class="modal__eyebrow"
+                            id="modal-eyebrow"
+                        ></span>
+
+                        <h2
+                            class="modal__title"
+                            id="modal-title"
+                        ></h2>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="modal__close"
+                        id="modal-close"
+                        aria-label="Cerrar ventana"
+                    >
+                        &times;
+                    </button>
+
+                </header>
+
+                <div
+                    class="modal__body"
+                    id="modal-body"
+                ></div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- PLANTILLA: INICIAR SESIÓN     -->
+    <!-- ============================= -->
+
+    <template id="login-template">
+
+        <div class="auth-layout">
+
+            <aside class="auth-layout__art">
+
+                <span class="auth-layout__brand">
+                    Mercado Prime
+                </span>
+
+                <h3>
+                    Tu próxima compra comienza aquí.
+                </h3>
+
+                <p>
+                    Explora, guarda y compra con una experiencia
+                    pensada para ti.
+                </p>
+
+                <div class="auth-layout__illustration">
+
+                    <div class="auth-illustration__bag">
+                        <span class="auth-illustration__handle"></span>
+                        <span class="auth-illustration__logo">MP</span>
+                    </div>
+
+                </div>
+
+            </aside>
+
+            <div class="auth-layout__form">
+
+                <p class="eyebrow">
+                    Acceso seguro
+                </p>
+
+                <h3>Inicia sesión</h3>
+
+                <p class="modal__intro" data-auth-copy>
+                    Inicia sesión para continuar con tu compra.
+                </p>
+
+                <form novalidate class="form" id="login-form">
+
+                    <label>
+                        Correo electrónico
+
+                        <input
+                            name="email"
+                            type="email"
+                            autocomplete="email"
+                            required
+                        >
+                    </label>
+
+                    <label>
+                        Contraseña
+
+                        <input
+                            name="password"
+                            type="password"
+                            autocomplete="current-password"
+                            minlength="6"
+                            required
+                        >
+                    </label>
+
+                    <button
+                        class="btn btn--dark btn--block"
+                        type="submit"
+                    >
+                        Entrar
+                    </button>
+
+                </form>
+
+                <p class="form-switch">
+                    ¿Aún no tienes cuenta?
+
+                    <button type="button" data-switch-register>
+                        Crear cuenta
+                    </button>
+                </p>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+    <!-- ============================= -->
+    <!-- PLANTILLA: REGISTRO           -->
+    <!-- ============================= -->
+
+    <template id="register-template">
+
+        <div class="auth-layout">
+
+            <aside class="auth-layout__art">
+
+                <span class="auth-layout__brand">
+                    Mercado Prime
+                </span>
+
+                <h3>
+                    Una cuenta, todas tus compras.
+                </h3>
+
+                <p>
+                    Guarda tus pedidos y gestiona tus datos
+                    siempre que lo necesites.
+                </p>
+
+                <div class="auth-layout__illustration">
+
+                    <div class="auth-illustration__bag">
+                        <span class="auth-illustration__handle"></span>
+                        <span class="auth-illustration__logo">MP</span>
+                    </div>
+
+                </div>
+
+            </aside>
+
+            <div class="auth-layout__form">
+
+                <p class="eyebrow">
+                    Empieza hoy
+                </p>
+
+                <h3>Regístrate</h3>
+
+                <p class="modal__intro">
+                    Solo necesitas estos datos para comenzar.
+                </p>
+
+                <form novalidate class="form" id="register-form">
+
+                    <label>
+                        Nombre
+
+                        <input
+                            name="nombre"
+                            type="text"
+                            autocomplete="name"
+                            minlength="3"
+                            required
+                        >
+                    </label>
+
+                    <label>
+                        Correo electrónico
+
+                        <input
+                            name="email"
+                            type="email"
+                            autocomplete="email"
+                            required
+                        >
+                    </label>
+
+                    <label>
+                        Contraseña
+
+                        <input
+                            name="password"
+                            type="password"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+                    </label>
+
+                    <button
+                        class="btn btn--dark btn--block"
+                        type="submit"
+                    >
+                        Crear mi cuenta
+                    </button>
+
+                </form>
+
+                <p class="form-switch">
+                    ¿Ya tienes cuenta?
+
+                    <button type="button" data-switch-login>
+                        Iniciar sesión
+                    </button>
+                </p>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+    <!-- ============================= -->
+    <!-- PLANTILLA: CARRITO            -->
+    <!-- ============================= -->
+
+    <template id="cart-template">
+
+        <div class="cart-layout">
+
+            <div id="cart-items" class="cart-items">
+                <div class="loading">
+                    Cargando carrito…
+                </div>
+            </div>
+
+            <aside class="cart-summary">
+
+                <p>Resumen</p>
+
+                <strong id="cart-total">$0.00</strong>
+
+                <small>
+                    Los impuestos y envío se calculan al finalizar.
+                </small>
+
+                <p class="cart-summary__notice" data-checkout-notice hidden></p>
+
+                <button
+                    class="btn btn--dark btn--block"
+                    type="button"
+                    id="checkout"
+                    disabled
+                >
+                    Finalizar compra
+                </button>
+
+            </aside>
+
+        </div>
+
+    </template>
+
+
+    <!-- ELEMENTO INDIVIDUAL DEL CARRITO -->
+
+    <template id="cart-item-template">
+
+        <article class="cart-item">
+
+            <div
+                class="cart-item__art"
+                data-item-initials
+            ></div>
+
+            <div>
+                <h3 data-item-name></h3>
+                <p data-item-quantity-price></p>
+                <p class="cart-item__status" data-item-status hidden></p>
+            </div>
+
+            <strong data-item-subtotal></strong>
+
+            <button
+                class="text-button text-button--danger"
+                type="button"
+                data-remove
+            >
+                Eliminar
+            </button>
+
+        </article>
+
+    </template>
+
+
+    <!-- ============================= -->
+    <!-- PLANTILLA: COMPRAS            -->
+    <!-- ============================= -->
+
+    <template id="orders-template">
+
+        <div id="orders" class="orders">
+            <div class="loading">
+                Cargando historial…
+            </div>
+        </div>
+
+    </template>
+
+
+    <!-- ELEMENTO INDIVIDUAL DE ORDEN -->
+
+    <template id="order-item-template">
+
+        <article class="order">
+
+            <div class="order__head">
+
+                <div>
+                    <p class="eyebrow" data-order-id></p>
+                    <h3 data-order-date></h3>
+                </div>
+
+                <div>
+                    <span class="status" data-order-status></span>
+                    <strong data-order-total></strong>
+                </div>
+
+            </div>
+
+            <ul data-order-details></ul>
+
+        </article>
+
+    </template>
+
+
+    <!-- DETALLE INDIVIDUAL DE ORDEN -->
+
+    <template id="order-detail-template">
+
+        <li>
+            <span data-detail-product></span>
+            <span data-detail-price></span>
+        </li>
+
+    </template>
+
+
+    <!-- ============================= -->
+    <!-- PLANTILLA: PERFIL             -->
+    <!-- ============================= -->
+
+    <template id="profile-template">
+
+        <div class="profile">
+
+            <div
+                class="profile__avatar"
+                data-profile-avatar
+            ></div>
+
+            <p class="eyebrow">
+                Información de usuario
+            </p>
+
+            <h3 data-profile-name></h3>
+
+            <p
+                class="profile__name"
+                data-profile-email
+            ></p>
+
+            <span
+                class="status"
+                data-profile-role
+            ></span>
+
+        </div>
+
+        <div class="profile__actions">
+
+            <button
+                class="btn btn--secondary"
+                type="button"
+                data-open-account
+            >
+                Configuración
+            </button>
+
+            <button
+                class="btn btn--dark"
+                type="button"
+                data-open-orders
+            >
+                Ver compras
+            </button>
+
+        </div>
+
+    </template>
+
+
+    <!-- ============================= -->
+    <!-- PLANTILLA: CUENTA             -->
+    <!-- ============================= -->
+
+    <template id="account-template">
+
+        <div
+            class="tabs"
+            role="tablist"
+            aria-label="Secciones de la cuenta"
+        >
+
+            <button
+                class="tab is-active"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                aria-controls="account-form-slot"
+                data-tab="name"
+            >
+                Nombre
+            </button>
+
+            <button
+                class="tab"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="account-form-slot"
+                data-tab="email"
+            >
+                Correo
+            </button>
+
+            <button
+                class="tab"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="account-form-slot"
+                data-tab="password"
+            >
+                Contraseña
+            </button>
+
+        </div>
+
+        <div
+            id="account-form-slot"
+            class="account-form-slot"
+            role="tabpanel"
+        ></div>
+
+    </template>
+
+
+    <!-- FORMULARIO DE CONFIGURACIÓN -->
+
+    <template id="account-panel-template">
+
+        <form novalidate class="form account-panel">
+
+            <div>
+                <h3 data-panel-title></h3>
+                <p class="modal__intro" data-panel-hint></p>
+            </div>
+
+            <div data-panel-fields></div>
+
+            <button
+                class="btn btn--dark"
+                type="submit"
+            >
+                Guardar cambios
+            </button>
+
+        </form>
+
+    </template>
+
+
+    <!-- ============================= -->
+    <!-- PLANTILLA: ADMINISTRACIÓN     -->
+    <!-- ============================= -->
+
+    <template id="admin-template">
+
+        <div
+            class="tabs"
+            role="tablist"
+            aria-label="Secciones de administración"
+        >
+
+            <button
+                class="tab is-active"
+                type="button"
+                role="tab"
+                aria-selected="true"
+                aria-controls="admin-content"
+                data-admin-tab="products"
+            >
+                Productos
+            </button>
+
+            <button
+                class="tab"
+                type="button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="admin-content"
+                data-admin-tab="categories"
+            >
+                Categorías
+            </button>
+
+        </div>
+
+        <section id="admin-content" role="tabpanel">
+
+            <div class="loading">
+                Cargando administración…
+            </div>
+
+        </section>
+
+    </template>
+
+
+    <!-- ============================= -->
+    <!-- ADMINISTRACIÓN: PRODUCTOS     -->
+    <!-- ============================= -->
+
+    <template id="admin-products-template">
+
+        <div class="admin-grid">
+
+            <div class="admin-form-panel">
+
+                <form
+                    novalidate
+                    class="form admin-form"
+                    id="product-form"
+                >
+
+                    <h3 id="product-form-title">
+                        Agregar producto
+                    </h3>
+
+                    <input name="id" type="hidden">
+
+                    <label>
+                        Nombre
+                        <input name="nombre" required>
+                    </label>
+
+                    <label>
+                        Descripción
+                        <textarea name="descripcion"></textarea>
+                    </label>
+
+                    <div class="form-row">
+
+                        <label>
+                            Precio
+                            <input
+                                name="precio"
+                                type="number"
+                                min="0.01"
+                                step="0.01"
+                                required
+                            >
+                        </label>
+
+                        <label>
+                            Stock
+                            <input
+                                name="stock"
+                                type="number"
+                                min="0"
+                                required
+                            >
+                        </label>
+
+                    </div>
+
+                    <label>
+                        Categoría
+
+                        <select name="categoriaId" required>
+                            <option value="">
+                                Selecciona una categoría
+                            </option>
+                        </select>
+                    </label>
+
+                    <label class="check">
+                        <input
+                            name="activo"
+                            type="checkbox"
+                            checked
+                        >
+                        Producto activo
+                    </label>
+
+                    <div class="form-row">
+
+                        <button
+                            class="btn btn--dark"
+                            type="submit"
+                        >
+                            Guardar producto
+                        </button>
+
+                        <button
+                            class="btn btn--secondary"
+                            type="button"
+                            data-reset-product
+                            hidden
+                        >
+                            Cancelar
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <div class="admin-list">
+
+                <div class="admin-list__head">
+
+                    <h3>Productos registrados</h3>
+
+                    <span data-products-count></span>
+
+                </div>
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Stock</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="admin-products-list"></tbody>
+
+                    </table>
+
+                </div>
+
+                <nav
+                    id="admin-products-pagination"
+                    class="pagination"
+                    aria-label="Paginación de productos"
+                    hidden
+                ></nav>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+    <!-- FILA INDIVIDUAL DE PRODUCTO -->
+
+    <template id="admin-product-row-template">
+
+        <tr>
+
+            <td>
+                <b data-product-name></b>
+                <small data-product-category></small>
+            </td>
+
+            <td data-product-price></td>
+
+            <td data-product-stock></td>
+
+            <td data-product-status></td>
+
+            <td>
+
+                <button
+                    class="table-action table-action--edit"
+                    type="button"
+                    data-edit-product
+                >
+                    Editar
+                </button>
+
+                <button
+                    class="table-action table-action--delete"
+                    type="button"
+                    data-delete-product
+                >
+                    Eliminar
+                </button>
+
+            </td>
+
+        </tr>
+
+    </template>
+
+
+    <!-- ============================= -->
+    <!-- ADMINISTRACIÓN: CATEGORÍAS    -->
+    <!-- ============================= -->
+
+    <template id="admin-categories-template">
+
+        <div class="admin-grid">
+
+            <div class="admin-form-panel">
+
+                <form
+                    novalidate
+                    class="form admin-form"
+                    id="category-form"
+                >
+
+                    <h3 id="category-form-title">
+                        Agregar categoría
+                    </h3>
+
+                    <input name="id" type="hidden">
+
+                    <label>
+                        Nombre de la categoría
+                        <input name="nombre" required>
+                    </label>
+
+                    <div class="form-row">
+
+                        <button
+                            class="btn btn--dark"
+                            type="submit"
+                        >
+                            Guardar categoría
+                        </button>
+
+                        <button
+                            class="btn btn--secondary"
+                            type="button"
+                            data-reset-category
+                            hidden
+                        >
+                            Cancelar
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <div class="admin-list">
+
+                <div class="admin-list__head">
+
+                    <h3>Categorías</h3>
+
+                    <span data-categories-count></span>
+
+                </div>
+
+                <div
+                    class="category-list"
+                    id="admin-categories-list"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+    <!-- ELEMENTO INDIVIDUAL DE CATEGORÍA -->
+
+    <template id="admin-category-item-template">
+
+        <div>
+
+            <strong data-category-name></strong>
+
+            <span>
+
+                <button
+                    class="table-action table-action--edit"
+                    type="button"
+                    data-edit-category
+                >
+                    Editar
+                </button>
+
+                <button
+                    class="table-action table-action--delete"
+                    type="button"
+                    data-delete-category
+                >
+                    Eliminar
+                </button>
+
+            </span>
+
+        </div>
+
+    </template>
+
+
+    <!-- ============================= -->
+    <!-- NOTIFICACIONES                -->
+    <!-- ============================= -->
+
+    <div
+        id="toast-root"
+        class="toast-root"
+        aria-live="polite"
+        aria-atomic="true"
+    ></div>
+
+
+    <!-- ============================= -->
+    <!-- JAVASCRIPT PRINCIPAL          -->
+    <!-- ============================= -->
+
+    <script type="module" src="./js/pages.js"></script>
+
+</body>
+</html>
