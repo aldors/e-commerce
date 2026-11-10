@@ -28,24 +28,27 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(
-        name = "Productos",
+        name = "Productos Admin",
         description = "Administración de productos del sistema"
 )
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/productos")
+@RequestMapping("/admin/productos")
 @RequiredArgsConstructor
-public class ProductoController {
-    
+@PreAuthorize("hasRole('ADMIN')")
+public class ProductoAdminController {
+
     private final ProductoService productoService;
 
-@Operation(summary = "Crear producto", description = "Permite a un administrador crear un nuevo producto"
+@Operation(
+        summary = "Listar productos (admin)",
+        description = "Permite a un administrador listar todos los productos, incluyendo los inactivos"
 )
 @ApiResponses({
         @ApiResponse(
-                responseCode = "201",
-                description = "Producto creado correctamente"
+                responseCode = "200",
+                description = "Productos listados correctamente"
         ),
         @ApiResponse(
                 responseCode = "400",
@@ -60,34 +63,7 @@ public class ProductoController {
                 description = "No autorizado"
         )
 })
-    
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/crear")
-    public ResponseEntity<ApiResponsee<ProductoResponse>> crear(@Valid @RequestBody ProductoRequest productoRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponsee<>(true, "Producto creado correctamente", productoService.crear(productoRequest)));
-    }
 
-
-@Operation(
-        summary = "Listar productos",
-        description = "Permite a usuarios y administradores listar los productos"
-)
-@ApiResponses({
-        @ApiResponse(
-                responseCode = "200",
-                description = "Productos listados correctamente"
-        ),
-        @ApiResponse(
-                responseCode = "400",
-                description = "Datos inválidos"
-        ),
-        @ApiResponse(
-                responseCode = "401",
-                description = "No autenticado"
-        )
-})
-
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/listar")
     public ResponseEntity<ApiResponsee<Page<ProductoResponse>>> listar(
         @RequestParam(defaultValue = "0") int page,
@@ -108,10 +84,38 @@ public class ProductoController {
                     direction,
                     categoria,
                     minPrecio,
-                    maxPrecio
+                    maxPrecio,
+                    true
         )));
     }
 
+@Operation(
+        summary = "Crear producto",
+        description = "Permite a un administrador crear un nuevo producto"
+)
+@ApiResponses({
+        @ApiResponse(
+                responseCode = "201",
+                description = "Producto creado correctamente"
+        ),
+        @ApiResponse(
+                responseCode = "400",
+                description = "Datos inválidos"
+        ),
+        @ApiResponse(
+                responseCode = "401",
+                description = "No autenticado"
+        ),
+        @ApiResponse(
+                responseCode = "403",
+                description = "No autorizado"
+        )
+})
+
+    @PostMapping("/crear")
+    public ResponseEntity<ApiResponsee<ProductoResponse>> crear(@Valid @RequestBody ProductoRequest productoRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponsee<>(true, "Producto creado correctamente", productoService.crear(productoRequest)));
+    }
 
 @Operation(
         summary = "Actualizar producto",
@@ -136,12 +140,10 @@ public class ProductoController {
         )
 })
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<ApiResponsee<ProductoResponse>> actualizar(@Valid @RequestBody ProductoRequest productoRequest, @PathVariable Long id){
         return ResponseEntity.ok(new ApiResponsee<>(true, "Producto actualizado correctamente", productoService.actualizar(productoRequest, id)));
     }
-
 
 @Operation(
         summary = "Eliminar producto",
@@ -166,7 +168,6 @@ public class ProductoController {
         )
 })
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
         productoService.eliminar(id);
