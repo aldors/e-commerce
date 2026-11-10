@@ -3,6 +3,7 @@ import {
     apiJson,
     escapeHtml,
     formatMoney,
+    getSession,
     hasSession,
     notifyError,
     toast
@@ -82,8 +83,13 @@ export async function loadProducts(page = currentPage) {
     }
 
     try {
+        const esAdmin = getSession()?.isAdmin === true;
+        const endpoint = esAdmin
+            ? "/admin/productos/listar"
+            : "/productos/listar";
+
         const response = await apiJson(
-            `/productos/listar?page=${page}&size=${PAGE_SIZE}`
+            `${endpoint}?page=${page}&size=${PAGE_SIZE}`
         );
 
         const products = response.content || [];
@@ -236,8 +242,10 @@ function createProductCard(product) {
 
     const stock = Math.max(0, Number(product.stock) || 0);
 
+    const inactivo = product.activo === false;
+
     const available =
-        product.activo !== false &&
+        !inactivo &&
         product.disponible !== false &&
         stock > 0;
 
@@ -268,7 +276,7 @@ function createProductCard(product) {
             </p>
 
             <p class="product-card__stock ${available ? "is-available" : "is-unavailable"}">
-                ${available ? `Disponibles: ${stock}` : "Agotado"}
+                ${inactivo ? "Inactivo" : available ? `Disponibles: ${stock}` : "Agotado"}
             </p>
 
             <div class="product-card__footer">
