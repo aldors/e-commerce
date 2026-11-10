@@ -1,5 +1,6 @@
 import {
     apiJson,
+    confirmAction,
     formatMoney,
     toast,
     notifyError
@@ -583,9 +584,12 @@ async function saveProduct(form, modalBody) {
  */
 async function deleteProduct(product) {
 
-    const confirmed = confirm(
-        `¿Eliminar el producto "${product.nombre}"?`
-    );
+    const confirmed = await confirmAction({
+        title: "Desactivar producto",
+        message: `¿Desactivar el producto "${product.nombre}"? Ya no aparecerá en el catálogo.`,
+        confirmText: "Desactivar",
+        cancelText: "Cancelar"
+    });
 
     if (!confirmed) return;
 
@@ -595,7 +599,7 @@ async function deleteProduct(product) {
             method: "DELETE"
         });
 
-        toast("Producto eliminado correctamente.", "success");
+        toast("Producto desactivado correctamente.", "success");
 
         const body = document.getElementById("modal-body");
 
@@ -853,9 +857,12 @@ async function saveCategory(form, modalBody) {
  */
 async function deleteCategory(category) {
 
-    const confirmed = confirm(
-        `¿Eliminar la categoría "${category.nombre}"?`
-    );
+    const confirmed = await confirmAction({
+        title: "Eliminar categoría",
+        message: `¿Eliminar la categoría "${category.nombre}"?`,
+        confirmText: "Eliminar",
+        cancelText: "Cancelar"
+    });
 
     if (!confirmed) return;
 

@@ -405,6 +405,15 @@ h2 {
   background: #2b3c36;
 }
 
+.btn--danger {
+  background: var(--danger);
+  color: #17221f;
+}
+
+.btn--danger:hover {
+  background: #e85f47;
+}
+
 .btn--small {
   min-height: 34px;
   padding: 0.4rem 0.7rem;
@@ -1212,6 +1221,37 @@ html[data-theme="dark"] .hero p:not(.eyebrow) {
   color: #b54c3c;
 }
 
+.toast--confirm {
+  position: fixed;
+  z-index: 50;
+  top: 50%;
+  left: 50%;
+  width: min(420px, calc(100vw - 2rem));
+  grid-template-columns: 34px 1fr;
+  border-color: rgba(241, 117, 94, 0.35);
+  box-shadow: 0 24px 70px rgba(20, 35, 29, 0.28);
+  transform: translate(-50%, -50%);
+  animation: confirm-in 0.2s ease both;
+}
+
+.toast__content {
+  min-width: 0;
+}
+
+.toast__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin-top: 0.7rem;
+}
+
+.toast__action {
+  min-height: 32px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+}
+
 /* =========================================================
    ELEMENTOS DE ADMINISTRACIÓN
    ========================================================= */
@@ -1402,6 +1442,18 @@ html[data-theme="dark"] .hero p:not(.eyebrow) {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes confirm-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 10px)) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 

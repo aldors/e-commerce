@@ -134,6 +134,71 @@ export function toast(message, type = "info") {
     window.setTimeout(() => element.remove(), 4400);
 }
 
+let activeConfirmCancel = null;
+
+export function confirmAction({
+    title = "¿Confirmar acción?",
+    message = "",
+    confirmText = "Confirmar",
+    cancelText = "Cancelar",
+    type = "error"
+} = {}) {
+    const root = document.getElementById("toast-root");
+    if (!root) return Promise.resolve(false);
+    activeConfirmCancel?.();
+    return new Promise((resolve) => {
+        const labels = { success: ["✓", "Listo"], info: ["i", "Información"], error: ["!", "Atención"] };
+        const [icon] = labels[type] || labels.info;
+        const previousFocus = document.activeElement;
+        const element = document.createElement("div");
+        element.className = `toast toast--${type} toast--confirm`;
+        element.setAttribute("role", "alertdialog");
+        element.setAttribute("aria-live", "assertive");
+        element.setAttribute("aria-label", title);
+        const iconElement = document.createElement("span");
+        iconElement.className = "toast__icon";
+        iconElement.textContent = icon;
+        const content = document.createElement("div");
+        content.className = "toast__content";
+        const heading = document.createElement("strong");
+        heading.textContent = title;
+        const text = document.createElement("p");
+        text.textContent = message;
+        const actions = document.createElement("div");
+        actions.className = "toast__actions";
+        const cancelButton = document.createElement("button");
+        cancelButton.type = "button";
+        cancelButton.className = "btn btn--secondary btn--small toast__action";
+        cancelButton.textContent = cancelText;
+        const confirmButton = document.createElement("button");
+        confirmButton.type = "button";
+        confirmButton.className = "btn btn--danger btn--small toast__action";
+        confirmButton.textContent = confirmText;
+        const finish = (result) => {
+            document.removeEventListener("keydown", onKeyDown, true);
+            element.remove();
+            if (activeConfirmCancel === finish) activeConfirmCancel = null;
+            if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+            resolve(result);
+        };
+        const onKeyDown = (event) => {
+            if (event.key !== "Escape") return;
+            event.preventDefault();
+            event.stopPropagation();
+            finish(false);
+        };
+        cancelButton.addEventListener("click", () => finish(false));
+        confirmButton.addEventListener("click", () => finish(true));
+        document.addEventListener("keydown", onKeyDown, true);
+        actions.append(cancelButton, confirmButton);
+        content.append(heading, text, actions);
+        element.append(iconElement, content);
+        root.append(element);
+        activeConfirmCancel = finish;
+        requestAnimationFrame(() => confirmButton.focus());
+    });
+}
+
 export function notifyError(error) {
     console.error(error);
     const normalized = error instanceof ApiError ? error : new ApiError("Ocurrió un error inesperado", ["Inténtalo de nuevo en unos momentos."]);
