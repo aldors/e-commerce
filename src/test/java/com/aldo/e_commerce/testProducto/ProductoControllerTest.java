@@ -1,6 +1,7 @@
 package com.aldo.e_commerce.testProducto;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -8,17 +9,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import org.springframework.test.web.servlet.MockMvc;
-import com.aldo.e_commerce.controller.ProductoController;
+import com.aldo.e_commerce.controller.ProductoAdminController;
+import com.aldo.e_commerce.controller.ProductoPublicController;
 import com.aldo.e_commerce.dto.producto.ProductoRequest;
 import com.aldo.e_commerce.dto.producto.ProductoResponse;
+import com.aldo.e_commerce.security.CustomAccessDeniedHandler;
+import com.aldo.e_commerce.security.CustomAuthenticationEntryPoint;
 import com.aldo.e_commerce.security.CustomUserDetailsService;
 import com.aldo.e_commerce.security.JwtService;
+import com.aldo.e_commerce.security.SecurityConfig;
 import com.aldo.e_commerce.service.interfaces.ProductoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,8 +40,9 @@ import java.util.List;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-@WebMvcTest(ProductoController.class) // Levanta solo la capa web. (json, validaciones @valid, controllers) nada de bdd real o services.
+@WebMvcTest({ProductoPublicController.class, ProductoAdminController.class}) // Levanta solo la capa web. (json, validaciones @valid, controllers) nada de bdd real o services.
 @AutoConfigureMockMvc(addFilters = true)
+@Import({SecurityConfig.class, CustomAuthenticationEntryPoint.class, CustomAccessDeniedHandler.class})
 public class ProductoControllerTest {
     
     @MockitoBean
@@ -53,6 +61,32 @@ public class ProductoControllerTest {
     @MockitoBean
     private CustomUserDetailsService customUserDetailsService;
 
+    private ProductoResponse productoResponse() {
+        return new ProductoResponse(
+                1L,
+                "Laptop",
+                "Laptop gamer",
+                15000.0,
+                10,
+                "Tecnologia",
+                true,
+                true
+        );
+    }
+
+    private void stubListar() {
+        when(productoService.listar(
+                any(Integer.class),
+                any(Integer.class),
+                any(String.class),
+                any(String.class),
+                any(),
+                any(),
+                any(),
+                anyBoolean()
+        )).thenReturn(new PageImpl<>(List.of(productoResponse())));
+    }
+
     @Test
     @WithMockUser(roles = "ADMIN")
     void deberiaCrearProducto() throws Exception { // Se usa throws Exception porque mockMvc.perform puede lanzar excepciones
@@ -65,22 +99,13 @@ public class ProductoControllerTest {
         request.setStock(10);
         request.setCategoriaId(1L);
 
-        ProductoResponse response = new ProductoResponse(
-                1L,
-                "Laptop",
-                "Laptop gamer",
-                15000.0,
-                10,
-                "Tecnologia",
-                true,
-                true
-        );
+        ProductoResponse response = productoResponse();
 
         when(productoService.crear(any(ProductoRequest.class)))
                 .thenReturn(response);
 
         mockMvc.perform(
-                        post("/productos/crear")
+                        post("/admin/productos/crear")
                         .with(csrf())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request))
@@ -96,29 +121,25 @@ public class ProductoControllerTest {
     @WithMockUser
     void deberiaListarProductos() throws Exception {
 
-        ProductoResponse response = new ProductoResponse(
-                1L,
-                "Laptop",
-                "Laptop gamer",
-                15000.0,
-                10,
-                "Tecnologia",
-                true,
-                true
-        );
-
-        when(productoService.listar(
-                any(Integer.class),
-                any(Integer.class),
-                any(String.class),
-                any(String.class),
-                any(),
-                any(),
-                any()
-        )).thenReturn(new PageImpl<>(List.of(response)));
+        stubListar();
 
         mockMvc.perform(
                 get("/productos/listar"))
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.content[0].nombre")
+                        .value("Laptop"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void deberiaListarProductosComoAdmin() throws Exception {
+
+        stubListar();
+
+        mockMvc.perform(
+                get("/admin/productos/listar"))
 
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
@@ -153,7 +174,7 @@ public class ProductoControllerTest {
                 .thenReturn(response);
 
         mockMvc.perform(
-                put("/productos/actualizar/1")
+                put("/admin/productos/actualizar/1")
                 .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -170,7 +191,7 @@ public class ProductoControllerTest {
         doNothing().when(productoService).eliminar(1L);
 
         mockMvc.perform(
-                delete("/productos/eliminar/1")
+                delete("/admin/productos/eliminar/1")
                 .with(csrf()))
                 .andExpect(status().isNoContent());
 
@@ -180,11 +201,22 @@ public class ProductoControllerTest {
                 // .andExpect(jsonPath("$.data").doesNotExist());
     }
 
-    // Test de jwt
+    // Test de seguridad
     @Test
-    void deberiaRetornar401SiNoEstaAutenticado() throws Exception {
+    void deberiaPermitirListarSinAutenticacion() throws Exception {
+
+        stubListar();
 
         mockMvc.perform(get("/productos/listar"))
+
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void deberiaRetornar401EnEndpointAdminSinAutenticacion() throws Exception {
+
+        mockMvc.perform(get("/admin/productos/listar"))
 
                 .andExpect(status().isUnauthorized());
     }
@@ -192,6 +224,8 @@ public class ProductoControllerTest {
     @Test
     @WithMockUser(username = "aldo@gmail.com", roles = {"USER"})
     void deberiaPermitirAccesoAUsuarioAutenticado() throws Exception {
+
+        stubListar();
 
         mockMvc.perform(get("/productos/listar"))
 
@@ -202,7 +236,7 @@ public class ProductoControllerTest {
     @WithMockUser(username = "aldo@gmail.com", roles = {"USER"})
     void deberiaRetornar403SiUsuarioNoEsAdmin() throws Exception {
 
-        mockMvc.perform(delete("/productos/eliminar/1"))
+        mockMvc.perform(delete("/admin/productos/eliminar/1"))
 
                 .andExpect(status().isForbidden());
     }
@@ -211,7 +245,7 @@ public class ProductoControllerTest {
     @WithMockUser(username = "admin@gmail.com", roles = {"ADMIN"})
     void deberiaPermitirEliminarSiEsAdmin() throws Exception {
 
-        mockMvc.perform(delete("/productos/eliminar/1")
+        mockMvc.perform(delete("/admin/productos/eliminar/1")
                 .with(csrf()))
 
                 .andExpect(status().isNoContent());

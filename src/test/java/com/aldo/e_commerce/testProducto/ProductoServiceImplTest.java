@@ -21,19 +21,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.data.domain.Page;
 
 import com.aldo.e_commerce.dto.producto.ProductoRequest;
 import com.aldo.e_commerce.dto.producto.ProductoResponse;
 import com.aldo.e_commerce.entity.Categoria;
 import com.aldo.e_commerce.entity.Producto;
-import com.aldo.e_commerce.entity.Usuario;
-import com.aldo.e_commerce.enums.Role;
 import com.aldo.e_commerce.exception.CampoDeOrdenamientoInvalidoException;
 import com.aldo.e_commerce.exception.CategoriaNoEncontradaException;
 import com.aldo.e_commerce.exception.ProductoNoEncontradoException;
@@ -61,8 +54,6 @@ public class ProductoServiceImplTest {
 
     private ProductoRequest productoRequest;
 
-    private Usuario usuario;
-
     @BeforeEach // Crea datos reutilizables antes de cada test
     void setUp() {
 
@@ -87,26 +78,6 @@ public class ProductoServiceImplTest {
         productoRequest.setPrecio(15000.0);
         productoRequest.setStock(10);
         productoRequest.setCategoriaId(1L);
-
-
-        // Esto se hace aqui solo por que el admin puede ver productos inactivos (esto lo agregue despues) y ya lo habia hecho en otros test
-        usuario = Usuario.builder()
-            .id(1L)
-            .nombre("Admin")
-            .email("admin@test.com")
-            .password("admin123")
-            .role(Role.ADMIN)
-            .build();
-
-        // --- Simular usuario autenticado en SecurityContext ---
-        Authentication auth = new UsernamePasswordAuthenticationToken(
-                usuario.getEmail(),
-                null,
-                List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
-        );
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(auth);
-        SecurityContextHolder.setContext(securityContext);
     }
 
 
@@ -147,7 +118,8 @@ public class ProductoServiceImplTest {
                 "asc",
                 null,
                 null,
-                null
+                null,
+                false
         );
 
         assertEquals(1, response.getContent().size());
@@ -173,7 +145,8 @@ public class ProductoServiceImplTest {
                 "asc",
                 null,
                 null,
-                null
+                null,
+                true
         );
 
         assertEquals(2, response.getContent().size());
@@ -294,7 +267,8 @@ public class ProductoServiceImplTest {
                         "asc",
                         null,
                         null,
-                        null)
+                        null,
+                        false)
         );
 
         verify(productoRepository, never()).findAll(any(Specification.class), any(Pageable.class));
@@ -313,7 +287,8 @@ public class ProductoServiceImplTest {
                         "asc",
                         null,
                         null,
-                        null)
+                        null,
+                        false)
         );
 
         verify(productoRepository, never()).findAll(any(Specification.class), any(Pageable.class));
