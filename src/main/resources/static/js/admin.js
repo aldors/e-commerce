@@ -206,7 +206,7 @@ async function renderProductsPanel(body, page = productsPage) {
     try {
 
         const [productsResponse, categoriesResponse] = await Promise.all([
-            apiJson(`/productos/listar?page=${page}&size=${ADMIN_PAGE_SIZE}`),
+            apiJson(`/admin/productos/listar?page=${page}&size=${ADMIN_PAGE_SIZE}`),
             apiJson("/categorias/listar")
         ]);
 
@@ -540,7 +540,7 @@ async function saveProduct(form, modalBody) {
 
         if (id) {
 
-            await apiJson(`/productos/actualizar/${id}`, {
+            await apiJson(`/admin/productos/actualizar/${id}`, {
                 method: "PUT",
                 body: payload
             });
@@ -549,7 +549,7 @@ async function saveProduct(form, modalBody) {
 
         } else {
 
-            await apiJson("/productos/crear", {
+            await apiJson("/admin/productos/crear", {
                 method: "POST",
                 body: payload
             });
@@ -591,7 +591,7 @@ async function deleteProduct(product) {
 
     try {
 
-        await apiJson(`/productos/eliminar/${product.id}`, {
+        await apiJson(`/admin/productos/eliminar/${product.id}`, {
             method: "DELETE"
         });
 
