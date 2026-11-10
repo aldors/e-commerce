@@ -19,7 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.Page;
 
@@ -112,10 +114,7 @@ public class ProductoServiceImplTest {
                 .thenReturn(page);
 
         Page<ProductoResponse> response = productoService.listar(
-                0,
-                10,
-                "nombre",
-                "asc",
+                PageRequest.of(0, 10, Sort.by("nombre").ascending()),
                 null,
                 null,
                 null,
@@ -139,10 +138,7 @@ public class ProductoServiceImplTest {
                 .thenReturn(page);
 
         Page<ProductoResponse> response = productoService.listar(
-                0,
-                10,
-                "nombre",
-                "asc",
+                PageRequest.of(0, 10, Sort.by("nombre").ascending()),
                 null,
                 null,
                 null,
@@ -261,10 +257,7 @@ public class ProductoServiceImplTest {
 
         assertThrows(CampoDeOrdenamientoInvalidoException.class, () -> 
                 productoService.listar(
-                        0,
-                        5,
-                        sortByInvalido,
-                        "asc",
+                        PageRequest.of(0, 5, Sort.by(sortByInvalido).ascending()),
                         null,
                         null,
                         null,
@@ -281,10 +274,7 @@ public class ProductoServiceImplTest {
 
         assertThrows(TamañoMaximoDePaginaException.class, () -> 
                 productoService.listar(
-                        0,
-                        tamañoInvalido,
-                        "id",
-                        "asc",
+                        PageRequest.of(0, tamañoInvalido, Sort.by("id").ascending()),
                         null,
                         null,
                         null,

@@ -11,6 +11,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -76,10 +77,7 @@ public class ProductoControllerTest {
 
     private void stubListar() {
         when(productoService.listar(
-                any(Integer.class),
-                any(Integer.class),
-                any(String.class),
-                any(String.class),
+                any(Pageable.class),
                 any(),
                 any(),
                 any(),
