@@ -7,8 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +60,8 @@ public class ProductoServiceImpl implements ProductoService {
             String direction, // Como se ordenan los resultados ya se asc o desc
             String categoria,
             Double minPrecio,
-            Double maxPrecio) {
+            Double maxPrecio,
+            boolean incluirInactivos) {
 
         List<String> camposPermitidos = List.of(
                 "id",
@@ -92,19 +91,15 @@ public class ProductoServiceImpl implements ProductoService {
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        // Esto lo agregue para que en el panel de admin solo el pueda ver los productos aunque esten inactivos
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean esAdmin = auth.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"));
-
         Specification<Producto> spec = Specification
-                // Si es admin puede ver inactivos si es usuario se hace el filtro normal y no puede verlos
                 .where((root, query, cb) -> cb.conjunction());
 
-                if(!esAdmin){
-                    spec = spec.and(ProductoSpecification.estaActivo());
-                }
+        // El catálogo público solo muestra productos activos; el panel admin incluye inactivos.
+        if (!incluirInactivos) {
+            spec = spec.and(ProductoSpecification.estaActivo());
+        }
 
-                spec = spec.and(ProductoSpecification.tieneCategoria(categoria))
+        spec = spec.and(ProductoSpecification.tieneCategoria(categoria))
                 .and(ProductoSpecification.precioMayorOIgual(minPrecio))
                 .and(ProductoSpecification.precioMenorOIgual(maxPrecio));
 

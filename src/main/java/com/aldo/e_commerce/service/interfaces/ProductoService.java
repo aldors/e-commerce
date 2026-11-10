@@ -7,6 +7,7 @@ import com.aldo.e_commerce.dto.producto.ProductoResponse;
 
 public interface ProductoService {
     public ProductoResponse crear(ProductoRequest request);
+
     Page<ProductoResponse> listar(
         int page,
         int size,
@@ -14,7 +15,9 @@ public interface ProductoService {
         String direction,
         String categoria,
         Double minPrecio,
-        Double maxPrecio);
+        Double maxPrecio,
+        boolean incluirInactivos);
+        
     public ProductoResponse actualizar(ProductoRequest request, Long id);
     public void eliminar(Long id);
 }
