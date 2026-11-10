@@ -14,7 +14,6 @@ import {
 
 import {
     loadProducts,
-    renderGuestCatalog,
     setCatalogHandlers
 } from "./catalog.js";
 
@@ -236,7 +235,7 @@ export function showFormError(form, error) {
  * Los modales que requieren autenticación verifican primero
  * que exista una sesión activa.
  */
-export function openNamedModal(name) {
+export function openNamedModal(name, options = {}) {
 
     clearPageFeedback();
 
@@ -261,7 +260,7 @@ export function openNamedModal(name) {
     switch (name) {
 
         case "login":
-            openLogin();
+            openLogin(options.context, options.copy);
             break;
 
         case "register":
@@ -356,7 +355,7 @@ async function handleAuthenticated(user) {
 /**
  * Actualiza la interfaz cuando la sesión deja de ser válida.
  */
-function handleSessionExpired() {
+async function handleSessionExpired() {
 
     clearSession();
 
@@ -366,7 +365,7 @@ function handleSessionExpired() {
 
     renderHeader(null);
 
-    renderGuestCatalog();
+    await loadProducts();
 
     openLogin(
         "Tu sesión ha expirado.",
@@ -377,7 +376,7 @@ function handleSessionExpired() {
 /**
  * Actualiza la interfaz cuando el usuario cierra sesión manualmente.
  */
-function handleLoggedOut() {
+async function handleLoggedOut() {
 
     clearSession();
 
@@ -387,7 +386,7 @@ function handleLoggedOut() {
 
     renderHeader(null);
 
-    renderGuestCatalog();
+    await loadProducts();
 
     toast("Sesión cerrada correctamente.", "success");
 }
@@ -568,16 +567,9 @@ async function bootstrap() {
 
     renderHeader(currentUser);
 
-    if (currentUser) {
+    await loadProducts();
 
-        await loadProducts();
-
-        await updateCartBadge();
-
-    } else {
-
-        renderGuestCatalog();
-    }
+    await updateCartBadge();
 }
 
 /*

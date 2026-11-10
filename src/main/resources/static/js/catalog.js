@@ -30,42 +30,6 @@ export function setCatalogHandlers(handlers = {}) {
     };
 }
 
-export function renderGuestCatalog() {
-    if (!grid) return;
-
-    if (meta) meta.textContent = "Explora nuestro catálogo";
-
-    currentPage = 0;
-    totalPages = 0;
-
-    if (pagination) {
-        pagination.hidden = true;
-        pagination.replaceChildren();
-    }
-
-    grid.innerHTML = `
-        <div class="catalog-message">
-            <h3>¡Bienvenido a Mercado Prime!</h3>
-            <p>Inicia sesión o crea una cuenta para disfrutar de todas las funcionalidades de nuestra tienda.</p>
-            <div class="catalog-message__actions">
-                <button type="button" class="btn btn--primary" data-catalog-login>
-                    Iniciar sesión
-                </button>
-                <button type="button" class="btn btn--secondary" data-catalog-register>
-                    Crear cuenta
-                </button>
-            </div>
-        </div>`;
-
-    grid.querySelector("[data-catalog-login]")?.addEventListener("click", () => {
-        openModalFromCatalog("login");
-    });
-
-    grid.querySelector("[data-catalog-register]")?.addEventListener("click", () => {
-        openModalFromCatalog("register");
-    });
-}
-
 export async function loadProducts(page = currentPage) {
     if (!grid) {
         console.error("No se encontró el contenedor #products-grid.");
@@ -365,7 +329,10 @@ function createProductCard(product) {
         document.dispatchEvent(new CustomEvent("app:clear-operation-error"));
 
         if (!hasSession()) {
-            openModalFromCatalog("login");
+            openModalFromCatalog("login", {
+                context: "Inicia sesión para agregar productos al carrito.",
+                copy: "Si aún no tienes cuenta, puedes crear una."
+            });
             return;
         }
 
@@ -424,8 +391,8 @@ function createProductCard(product) {
     return card;
 }
 
-function openModalFromCatalog(name) {
+function openModalFromCatalog(name, options) {
     if (typeof catalogHandlers.onOpenModal === "function") {
-        catalogHandlers.onOpenModal(name);
+        catalogHandlers.onOpenModal(name, options);
     }
 }
