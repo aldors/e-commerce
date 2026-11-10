@@ -648,6 +648,35 @@ html[data-theme="dark"] .hero p:not(.eyebrow) {
   font-weight: 700;
 }
 
+.pagination__page {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: #17221f;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.pagination__page:hover {
+  background: var(--soft);
+}
+
+.pagination__page.is-active {
+  border-color: #17221f;
+  background: #17221f;
+  color: #fff;
+}
+
+.pagination__ellipsis {
+  color: var(--muted);
+  font-weight: 700;
+  padding: 0 0.25rem;
+}
+
 /* Tarjeta de producto */
 
 .product-card {

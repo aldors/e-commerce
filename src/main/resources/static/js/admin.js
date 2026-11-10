@@ -10,6 +10,8 @@ import {
     openModal
 } from "./modals.js";
 
+import { renderPageControls } from "./pagination.js";
+
 /*
 |--------------------------------------------------------------------------
 | Configuración
@@ -360,44 +362,11 @@ function renderProductsPagination(container, body) {
 
     if (!pagination) return;
 
-    pagination.replaceChildren();
-
-    if (productsTotalPages <= 1) {
-        pagination.hidden = true;
-        return;
-    }
-
-    pagination.hidden = false;
-
-    const previousButton = document.createElement("button");
-
-    previousButton.type = "button";
-    previousButton.className = "btn btn--secondary";
-    previousButton.textContent = "Anterior";
-    previousButton.disabled = productsPage <= 0;
-    previousButton.addEventListener(
-        "click",
-        () => renderProductsPanel(body, productsPage - 1)
-    );
-
-    const status = document.createElement("span");
-
-    status.className = "pagination__status";
-    status.setAttribute("aria-live", "polite");
-    status.textContent = `Página ${productsPage + 1} de ${productsTotalPages}`;
-
-    const nextButton = document.createElement("button");
-
-    nextButton.type = "button";
-    nextButton.className = "btn btn--secondary";
-    nextButton.textContent = "Siguiente";
-    nextButton.disabled = productsPage >= productsTotalPages - 1;
-    nextButton.addEventListener(
-        "click",
-        () => renderProductsPanel(body, productsPage + 1)
-    );
-
-    pagination.append(previousButton, status, nextButton);
+    renderPageControls(pagination, {
+        currentPage: productsPage,
+        totalPages: productsTotalPages,
+        onPageChange: (page) => renderProductsPanel(body, page)
+    });
 }
 
 /**

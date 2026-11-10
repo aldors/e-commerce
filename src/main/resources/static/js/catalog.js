@@ -9,6 +9,8 @@ import {
     toast
 } from "./app.js";
 
+import { renderPageControls } from "./pagination.js";
+
 const grid = document.getElementById("products-grid");
 const meta = document.getElementById("catalog-meta");
 const pagination = document.getElementById("catalog-pagination");
@@ -127,40 +129,11 @@ export async function loadProducts(page = currentPage) {
  */
 function renderPagination() {
 
-    if (!pagination) return;
-
-    pagination.replaceChildren();
-
-    if (totalPages <= 1) {
-        pagination.hidden = true;
-        return;
-    }
-
-    pagination.hidden = false;
-
-    const previousButton = document.createElement("button");
-
-    previousButton.type = "button";
-    previousButton.className = "btn btn--secondary";
-    previousButton.textContent = "Anterior";
-    previousButton.disabled = currentPage <= 0;
-    previousButton.addEventListener("click", () => loadProducts(currentPage - 1));
-
-    const status = document.createElement("span");
-
-    status.className = "pagination__status";
-    status.setAttribute("aria-live", "polite");
-    status.textContent = `Página ${currentPage + 1} de ${totalPages}`;
-
-    const nextButton = document.createElement("button");
-
-    nextButton.type = "button";
-    nextButton.className = "btn btn--secondary";
-    nextButton.textContent = "Siguiente";
-    nextButton.disabled = currentPage >= totalPages - 1;
-    nextButton.addEventListener("click", () => loadProducts(currentPage + 1));
-
-    pagination.append(previousButton, status, nextButton);
+    renderPageControls(pagination, {
+        currentPage,
+        totalPages,
+        onPageChange: (page) => loadProducts(page)
+    });
 }
 
 /**
