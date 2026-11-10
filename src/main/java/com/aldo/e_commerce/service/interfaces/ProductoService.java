@@ -1,6 +1,7 @@
 package com.aldo.e_commerce.service.interfaces;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.aldo.e_commerce.dto.producto.ProductoRequest;
 import com.aldo.e_commerce.dto.producto.ProductoResponse;
@@ -9,10 +10,7 @@ public interface ProductoService {
     public ProductoResponse crear(ProductoRequest request);
 
     Page<ProductoResponse> listar(
-        int page,
-        int size,
-        String sortBy,
-        String direction,
+        Pageable pageable,
         String categoria,
         Double minPrecio,
         Double maxPrecio,

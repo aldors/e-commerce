@@ -31,6 +31,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductoServiceImpl implements ProductoService {
 
+    private static final List<String> CAMPOS_PERMITIDOS = List.of(
+            "id",
+            "nombre",
+            "precio",
+            "stock");
+
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
 
@@ -54,42 +60,13 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional(readOnly = true)
     public Page<ProductoResponse> listar(
-            int page, // Numero de página
-            int size, // Numero de elementos por página
-            String sortBy,
-            String direction, // Como se ordenan los resultados ya se asc o desc
+            Pageable pageable,
             String categoria,
             Double minPrecio,
             Double maxPrecio,
             boolean incluirInactivos) {
 
-        List<String> camposPermitidos = List.of(
-                "id",
-                "nombre",
-                "precio",
-                "stock");
-
-        if (!camposPermitidos.contains(sortBy)) {
-            throw new CampoDeOrdenamientoInvalidoException(sortBy);
-        }
-
-        if (page < 0) {
-            throw new IllegalArgumentException("El número de página no puede ser negativo");
-        }
-
-        if (size < 1) {
-            throw new IllegalArgumentException("El tamaño de página debe ser mayor a 0");
-        }
-
-        if (size > 10) {
-            throw new TamañoMaximoDePaginaException();
-        }
-
-        Sort sort = direction.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageableNormalizado = normalizarPageable(pageable);
 
         Specification<Producto> spec = Specification
                 .where((root, query, cb) -> cb.conjunction());
@@ -103,12 +80,44 @@ public class ProductoServiceImpl implements ProductoService {
                 .and(ProductoSpecification.precioMayorOIgual(minPrecio))
                 .and(ProductoSpecification.precioMenorOIgual(maxPrecio));
 
-        return productoRepository.findAll(spec, pageable)
+        return productoRepository.findAll(spec, pageableNormalizado)
                 .map(ProductoMapper::toResponse);
+    }
 
-        // return
-        // productoRepository.findAll().stream().map(ProductoMapper::toResponse).toList();
+    private Pageable normalizarPageable(Pageable pageable) {
 
+        if (pageable == null) {
+            return PageRequest.of(0, 10, Sort.by("id").ascending());
+        }
+
+        if (pageable.getPageNumber() < 0) {
+            throw new IllegalArgumentException("El número de página no puede ser negativo");
+        }
+
+        if (pageable.getPageSize() < 1) {
+            throw new IllegalArgumentException("El tamaño de página debe ser mayor a 0");
+        }
+
+        if (pageable.getPageSize() > 10) {
+            throw new TamañoMaximoDePaginaException();
+        }
+
+        Sort sort = pageable.getSort();
+
+        if (sort.isUnsorted()) {
+            sort = Sort.by("id").ascending();
+        } else {
+            for (Sort.Order order : sort) {
+                if (!CAMPOS_PERMITIDOS.contains(order.getProperty())) {
+                    throw new CampoDeOrdenamientoInvalidoException(order.getProperty());
+                }
+            }
+        }
+
+        return PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort);
     }
 
     @Override

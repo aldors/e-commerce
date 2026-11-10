@@ -1,7 +1,11 @@
 package com.aldo.e_commerce.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/productos")
 @RequiredArgsConstructor
+@Validated
 public class ProductoPublicController {
 
     private final ProductoService productoService;
@@ -50,22 +55,13 @@ public class ProductoPublicController {
     @SecurityRequirements
     @GetMapping("/listar")
     public ResponseEntity<ApiResponsee<Page<ProductoResponse>>> listar(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-
-        @RequestParam(defaultValue = "id") String sortBy,
-        @RequestParam(defaultValue = "asc") String direction,
-
+        @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
         @RequestParam(required = false) String categoria,
-
         @RequestParam(required = false) Double minPrecio,
         @RequestParam(required = false) Double maxPrecio) {
 
         return ResponseEntity.ok(new ApiResponsee<>(true, "Productos paginados con exito", productoService.listar(
-                    page,
-                    size,
-                    sortBy,
-                    direction,
+                    pageable,
                     categoria,
                     minPrecio,
                     maxPrecio,
