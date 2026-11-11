@@ -257,6 +257,7 @@ function createProductCard(product) {
                     type="button"
                     class="btn btn--dark product-card__add"
                     data-add-cart
+                    aria-label="Agregar ${escapeHtml(productName)} al carrito"
                     ${!available ? "disabled" : ""}
                 >
                     Agregar al carrito

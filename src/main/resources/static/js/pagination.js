@@ -71,7 +71,8 @@ export function renderPageControls(container, { currentPage, totalPages, onPageC
         () => onPageChange(current - 1)
     );
 
-    container.appendChild(previousButton);
+    const pagesGroup = document.createElement("div");
+    pagesGroup.className = "pagination__pages";
 
     buildPageItems(current + 1, totalPages).forEach((item) => {
         if (item === "ellipsis") {
@@ -81,7 +82,7 @@ export function renderPageControls(container, { currentPage, totalPages, onPageC
             ellipsis.setAttribute("aria-hidden", "true");
             ellipsis.textContent = "…";
 
-            container.appendChild(ellipsis);
+            pagesGroup.appendChild(ellipsis);
             return;
         }
 
@@ -104,7 +105,7 @@ export function renderPageControls(container, { currentPage, totalPages, onPageC
             }
         });
 
-        container.appendChild(button);
+        pagesGroup.appendChild(button);
     });
 
     const nextButton = createNavigationButton(
@@ -113,5 +114,5 @@ export function renderPageControls(container, { currentPage, totalPages, onPageC
         () => onPageChange(current + 1)
     );
 
-    container.appendChild(nextButton);
+    container.append(previousButton, pagesGroup, nextButton);
 }
