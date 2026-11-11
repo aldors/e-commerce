@@ -106,132 +106,132 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleEmailExistente(EmailYaExistenteException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.CONFLICT.value(),
                 "Email ya registrado",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 
     @ExceptionHandler(RefreshTokenNoEncontradoException.class)
     public ResponseEntity<ApiError> handleRefreshTokenNoEncontrado(RefreshTokenNoEncontradoException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.NOT_FOUND.value(),
                 "Refresh token no encontrado",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     @ExceptionHandler(RefreshTokenExpiradoException.class)
     public ResponseEntity<ApiError> handleRefreshTokenExpirado(RefreshTokenExpiradoException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.UNAUTHORIZED.value(),
                 "Refresh token expirado",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 
     @ExceptionHandler(CategoriaNoEncontradaException.class)
     public ResponseEntity<ApiError> handleCategoriaNoEncontrada(CategoriaNoEncontradaException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.NOT_FOUND.value(),
                 "Categoria no encontrada",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     @ExceptionHandler(CategoriaYaExistenteException.class)
     public ResponseEntity<ApiError> handleCategoriaYaExistente(CategoriaYaExistenteException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.CONFLICT.value(),
                 "Categoria ya existente",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 
     @ExceptionHandler(ProductoNoEncontradoException.class)
     public ResponseEntity<ApiError> handleProductoNoEncontrado(ProductoNoEncontradoException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.NOT_FOUND.value(),
                 "Producto no encontrado",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     @ExceptionHandler(ProductoYaExistenteException.class)
     public ResponseEntity<ApiError> handleProductoYaExistente(ProductoYaExistenteException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.CONFLICT.value(),
                 "Producto ya existente",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 
     @ExceptionHandler(UsuarioNoEncontradoException.class)
     public ResponseEntity<ApiError> handleUsuarioNoEncontrado(UsuarioNoEncontradoException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.NOT_FOUND.value(),
                 "Usuario no encontrado",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     @ExceptionHandler(CarritoVacioException.class)
     public ResponseEntity<ApiError> handleCarritoVacio(CarritoVacioException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.CONFLICT.value(),
                 "El carrito está vacio",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 
     @ExceptionHandler(StockInsuficienteException.class)
     public ResponseEntity<ApiError> handleStockInsuficiente(StockInsuficienteException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.CONFLICT.value(),
                 "Stock insuficiente",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 
     @ExceptionHandler(ProductoNoDisponibleException.class)
     public ResponseEntity<ApiError> handleProductoNoDisponible(ProductoNoDisponibleException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
-                "Producto no dispinible",
+                HttpStatus.CONFLICT.value(),
+                "Producto no disponible",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 
     @ExceptionHandler(CampoDeOrdenamientoInvalidoException.class)
@@ -243,7 +243,7 @@ public class GlobalExceptionHandler {
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
     
     @ExceptionHandler(TamañoMaximoDePaginaException.class)
@@ -255,19 +255,19 @@ public class GlobalExceptionHandler {
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(CarritoInexistenteException.class)
     public ResponseEntity<ApiError> handleCarritoInexistente(CarritoInexistenteException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.NOT_FOUND.value(),
                 "Carrito inexistente",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     @ExceptionHandler(NuevoNombreDiferenteException.class)
@@ -279,7 +279,7 @@ public class GlobalExceptionHandler {
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(NuevoEmailDiferenteException.class)
@@ -291,7 +291,7 @@ public class GlobalExceptionHandler {
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(NuevaContraseñaDiferenteException.class)
@@ -303,7 +303,7 @@ public class GlobalExceptionHandler {
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(ContraseñaActualIncorrecta.class)
@@ -315,19 +315,19 @@ public class GlobalExceptionHandler {
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(UsuarioNoAutenticadoException.class)
     public ResponseEntity<ApiError> handleUsuarioNoAutenticado(UsuarioNoAutenticadoException ex) {
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.UNAUTHORIZED.value(),
                 "Usuario no autenticado",
                 List.of(ex.getMessage())
         );
 
-        return ResponseEntity.badRequest().body(apiError);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 
     @ExceptionHandler(RefreshTokenNoValidoException.class)
