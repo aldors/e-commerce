@@ -856,6 +856,12 @@ html[data-theme="dark"] .hero p:not(.eyebrow) {
   white-space: nowrap;
 }
 
+.product-card .product-card__details {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
 .product-card__actions {
   display: flex;
   align-items: center;

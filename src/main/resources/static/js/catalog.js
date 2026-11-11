@@ -10,6 +10,7 @@ import {
 } from "./app.js";
 
 import { renderPageControls } from "./pagination.js";
+import { openModal } from "./modals.js";
 
 const grid = document.getElementById("products-grid");
 const meta = document.getElementById("catalog-meta");
@@ -173,23 +174,218 @@ function getProductInitials(name) {
         .join("") || "MP";
 }
 
-function createProductCard(product) {
-    const card = document.createElement("article");
-    card.className = "product-card";
-
+function getProductAvailability(product) {
     const stock = Math.max(0, Number(product.stock) || 0);
-
     const inactivo = product.activo === false;
-
     const available =
         !inactivo &&
         product.disponible !== false &&
         stock > 0;
 
-    const category =
-        typeof product.categoria === "object"
-            ? product.categoria?.nombre
-            : product.categoria;
+    return { stock, inactivo, available };
+}
+
+function getProductCategory(product) {
+    return typeof product.categoria === "object"
+        ? product.categoria?.nombre
+        : product.categoria;
+}
+
+function getProductStockLabel({ inactivo, available, stock }) {
+    return inactivo
+        ? "Inactivo"
+        : available
+            ? `Disponibles: ${stock}`
+            : "Agotado";
+}
+
+async function addProductToCart(
+    product,
+    cantidad,
+    button,
+    { onSuccess, onInvalidQuantity } = {}
+) {
+    document.dispatchEvent(new CustomEvent("app:clear-operation-error"));
+
+    if (!hasSession()) {
+        openModalFromCatalog("login", {
+            context: "Inicia sesión para agregar productos al carrito.",
+            copy: "Si aún no tienes cuenta, puedes crear una."
+        });
+        return false;
+    }
+
+    const { stock, available } = getProductAvailability(product);
+
+    if (!available) {
+        toast("Este producto no está disponible.", "error");
+        return false;
+    }
+
+    if (cantidad > stock) {
+        toast("La cantidad supera el stock disponible.", "error");
+        onInvalidQuantity?.(stock);
+        return false;
+    }
+
+    const originalText = button.textContent;
+
+    button.disabled = true;
+    button.textContent = "Agregando...";
+
+    try {
+        await apiJson("/carrito", {
+            method: "POST",
+            body: {
+                productoId: product.id,
+                cantidad
+            }
+        });
+
+        toast("Producto agregado al carrito.", "success");
+
+        document.dispatchEvent(new CustomEvent("cart:updated"));
+
+        onSuccess?.();
+
+        return true;
+
+    } catch (error) {
+        console.error("Error al agregar producto al carrito:", error);
+
+        if (typeof catalogHandlers.onOperationError === "function") {
+            catalogHandlers.onOperationError(error);
+        } else {
+            notifyError(error);
+        }
+
+        if (isStockError(error)) {
+            await loadProducts(currentPage);
+        }
+
+        return false;
+
+    } finally {
+        if (button.isConnected) {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+}
+
+function openProductDetail(product) {
+    const { stock, inactivo, available } = getProductAvailability(product);
+    const category = getProductCategory(product);
+    const productName = product.nombre || "Producto";
+    const description = product.descripcion || "Sin descripción disponible.";
+
+    document.dispatchEvent(new CustomEvent("app:clear-operation-error"));
+
+    const body = openModal({
+        title: productName,
+        eyebrow: "Detalle del producto",
+        templateId: "product-detail-template",
+        className: "product-detail-modal"
+    });
+
+    if (!body) return;
+
+    const initials = body.querySelector("[data-detail-initials]");
+    const categoryElement = body.querySelector("[data-detail-category]");
+    const descriptionElement = body.querySelector("[data-detail-description]");
+    const priceElement = body.querySelector("[data-detail-price]");
+    const stockElement = body.querySelector("[data-detail-stock]");
+    const decreaseButton = body.querySelector("[data-detail-qty-decrease]");
+    const increaseButton = body.querySelector("[data-detail-qty-increase]");
+    const quantityValue = body.querySelector("[data-detail-qty-value]");
+    const addButton = body.querySelector("[data-detail-add]");
+    const quantityGroup = body.querySelector(".quantity");
+
+    if (initials) {
+        initials.textContent = getProductInitials(productName);
+    }
+
+    if (categoryElement) {
+        categoryElement.textContent = category || "General";
+    }
+
+    if (descriptionElement) {
+        descriptionElement.textContent = description;
+    }
+
+    if (priceElement) {
+        priceElement.textContent = formatMoney(product.precio);
+    }
+
+    if (stockElement) {
+        stockElement.textContent = getProductStockLabel({
+            inactivo,
+            available,
+            stock
+        });
+
+        stockElement.classList.toggle("is-available", available);
+        stockElement.classList.toggle("is-unavailable", !available);
+    }
+
+    if (quantityGroup) {
+        quantityGroup.setAttribute(
+            "aria-label",
+            `Cantidad de ${productName}`
+        );
+    }
+
+    if (addButton) {
+        addButton.disabled = !available;
+        addButton.setAttribute(
+            "aria-label",
+            `Agregar ${productName} al carrito`
+        );
+    }
+
+    let quantity = 1;
+    const maxQuantity = Math.max(1, stock);
+
+    function updateQuantity(nextQuantity) {
+        quantity = Math.min(maxQuantity, Math.max(1, nextQuantity));
+
+        if (quantityValue) {
+            quantityValue.textContent = String(quantity);
+        }
+
+        if (decreaseButton) {
+            decreaseButton.disabled = !available || quantity <= 1;
+        }
+
+        if (increaseButton) {
+            increaseButton.disabled = !available || quantity >= maxQuantity;
+        }
+    }
+
+    updateQuantity(1);
+
+    decreaseButton?.addEventListener("click", () => {
+        updateQuantity(quantity - 1);
+    });
+
+    increaseButton?.addEventListener("click", () => {
+        updateQuantity(quantity + 1);
+    });
+
+    addButton?.addEventListener("click", async () => {
+        await addProductToCart(product, quantity, addButton, {
+            onSuccess: () => updateQuantity(1),
+            onInvalidQuantity: (max) => updateQuantity(max)
+        });
+    });
+}
+
+function createProductCard(product) {
+    const card = document.createElement("article");
+    card.className = "product-card";
+
+    const { stock, inactivo, available } = getProductAvailability(product);
+    const category = getProductCategory(product);
 
     const productName = product.nombre || "Producto";
     const initials = getProductInitials(productName);
@@ -220,6 +416,15 @@ function createProductCard(product) {
                 <div class="product-card__price">
                     ${formatMoney(product.precio)}
                 </div>
+
+                <button
+                    type="button"
+                    class="text-button product-card__details"
+                    data-product-details
+                    aria-label="Ver detalles de ${escapeHtml(productName)}"
+                >
+                    Ver detalles
+                </button>
             </div>
 
             <div class="product-card__actions">
@@ -269,6 +474,7 @@ function createProductCard(product) {
     const increaseButton = card.querySelector("[data-qty-increase]");
     const quantityValue = card.querySelector("[data-qty-value]");
     const addButton = card.querySelector("[data-add-cart]");
+    const detailsButton = card.querySelector("[data-product-details]");
 
     let quantity = 1;
     const maxQuantity = Math.max(1, stock);
@@ -300,66 +506,14 @@ function createProductCard(product) {
     });
 
     addButton?.addEventListener("click", async () => {
-        document.dispatchEvent(new CustomEvent("app:clear-operation-error"));
+        await addProductToCart(product, quantity, addButton, {
+            onSuccess: () => updateQuantity(1),
+            onInvalidQuantity: (max) => updateQuantity(max)
+        });
+    });
 
-        if (!hasSession()) {
-            openModalFromCatalog("login", {
-                context: "Inicia sesión para agregar productos al carrito.",
-                copy: "Si aún no tienes cuenta, puedes crear una."
-            });
-            return;
-        }
-
-        const cantidad = quantity;
-
-        if (cantidad > stock) {
-            toast("La cantidad supera el stock disponible.", "error");
-            updateQuantity(stock);
-            return;
-        }
-
-        addButton.disabled = true;
-        addButton.textContent = "Agregando...";
-
-        let stockError = false;
-
-        try {
-            await apiJson("/carrito", {
-                method: "POST",
-                body: {
-                    productoId: product.id,
-                    cantidad
-                }
-            });
-
-            toast("Producto agregado al carrito.", "success");
-
-            document.dispatchEvent(new CustomEvent("cart:updated"));
-
-            updateQuantity(1);
-
-        } catch (error) {
-            console.error("Error al agregar producto al carrito:", error);
-
-            if (typeof catalogHandlers.onOperationError === "function") {
-                catalogHandlers.onOperationError(error);
-            } else {
-                notifyError(error);
-            }
-
-            stockError = isStockError(error);
-
-            if (stockError) {
-                await loadProducts(currentPage);
-            }
-
-        } finally {
-
-            if (addButton.isConnected) {
-                addButton.disabled = false;
-                addButton.textContent = "Agregar al carrito";
-            }
-        }
+    detailsButton?.addEventListener("click", () => {
+        openProductDetail(product);
     });
 
     return card;

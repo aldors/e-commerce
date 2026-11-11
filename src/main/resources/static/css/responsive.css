@@ -1037,3 +1037,38 @@
     min-height: 175px;
   }
 }
+
+/* =========================================================
+   DETALLE DE PRODUCTO
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .product-detail {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .product-detail__art {
+    min-height: 170px;
+  }
+
+  .product-detail__initials {
+    font-size: 4.4rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .product-detail__facts {
+    grid-template-columns: 1fr;
+  }
+
+  .product-detail__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .product-detail__actions .quantity {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

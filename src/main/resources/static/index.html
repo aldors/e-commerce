@@ -507,6 +507,94 @@
 
 
     <!-- ============================= -->
+    <!-- PLANTILLA: DETALLE PRODUCTO   -->
+    <!-- ============================= -->
+
+    <template id="product-detail-template">
+
+        <div class="product-detail">
+
+            <div class="product-detail__art" aria-hidden="true">
+                <span
+                    class="product-detail__initials"
+                    data-detail-initials
+                ></span>
+            </div>
+
+            <div class="product-detail__content">
+
+                <span
+                    class="product-detail__category"
+                    data-detail-category
+                ></span>
+
+                <p
+                    class="product-detail__description"
+                    data-detail-description
+                ></p>
+
+                <div class="product-detail__facts">
+
+                    <div>
+                        <span>Precio</span>
+                        <strong data-detail-price></strong>
+                    </div>
+
+                    <div>
+                        <span>Disponibilidad</span>
+                        <strong data-detail-stock></strong>
+                    </div>
+
+                </div>
+
+                <div class="product-detail__actions">
+
+                    <div
+                        class="quantity"
+                        role="group"
+                        aria-label="Cantidad"
+                    >
+                        <button
+                            type="button"
+                            data-detail-qty-decrease
+                            aria-label="Disminuir cantidad"
+                        >
+                            &minus;
+                        </button>
+
+                        <output
+                            data-detail-qty-value
+                            aria-live="polite"
+                            aria-label="Cantidad seleccionada"
+                        >1</output>
+
+                        <button
+                            type="button"
+                            data-detail-qty-increase
+                            aria-label="Aumentar cantidad"
+                        >
+                            +
+                        </button>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn btn--dark product-detail__add"
+                        data-detail-add
+                    >
+                        Agregar al carrito
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+    <!-- ============================= -->
     <!-- PLANTILLA: COMPRAS            -->
     <!-- ============================= -->
 

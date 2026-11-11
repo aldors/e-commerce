@@ -641,6 +641,136 @@
 }
 
 /* =========================================================
+   DETALLE DE PRODUCTO
+   ========================================================= */
+
+.product-detail-modal {
+  width: min(100%, 760px);
+}
+
+.product-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: 1.35rem;
+  align-items: stretch;
+}
+
+.product-detail__art {
+  display: grid;
+  min-height: 280px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 15px;
+  background: #e4efcb;
+  color: #34433b;
+}
+
+.product-detail__initials {
+  font-size: clamp(4.2rem, 9vw, 6.4rem);
+  font-weight: 850;
+  letter-spacing: -0.09em;
+  line-height: 1;
+}
+
+.product-detail__content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.product-detail__category {
+  color: #66736e;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.product-detail__description {
+  margin: 0;
+  color: #66736e;
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.product-detail__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: auto;
+}
+
+.product-detail__facts > div {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem;
+  border: 1px solid #e7e6df;
+  border-radius: 10px;
+  background: #fbfbf8;
+}
+
+.product-detail__facts span {
+  color: #66736e;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.product-detail__facts strong {
+  color: #17221f;
+  font-size: 1rem;
+}
+
+.product-detail__facts strong.is-available {
+  color: #427150;
+}
+
+.product-detail__facts strong.is-unavailable {
+  color: #b54c3c;
+}
+
+.product-detail__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+.product-detail__add {
+  flex: 1;
+  min-width: 0;
+}
+
+html[data-theme="dark"] .product-detail__art {
+  background: #20251f;
+  color: #d5f36c;
+}
+
+html[data-theme="dark"] .product-detail__category,
+html[data-theme="dark"] .product-detail__description {
+  color: #a1a1a1;
+}
+
+html[data-theme="dark"] .product-detail__facts > div {
+  border-color: #2a2a2a;
+  background: #151515;
+}
+
+html[data-theme="dark"] .product-detail__facts strong {
+  color: #f4f4f4;
+}
+
+html[data-theme="dark"] .product-detail__facts strong.is-available {
+  color: #9fd9a8;
+}
+
+html[data-theme="dark"] .product-detail__facts strong.is-unavailable {
+  color: #ff9b8d;
+}
+
+/* =========================================================
    COMPRAS Y PEDIDOS
    ========================================================= */
 
