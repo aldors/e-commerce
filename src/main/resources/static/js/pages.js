@@ -4,6 +4,7 @@
     getSession,
     hasSession,
     notifyError,
+    scheduleSessionExpiration,
     toast
 } from "./app.js";
 
@@ -45,6 +46,7 @@ import {
 */
 
 let currentUser = null;
+let handlingSessionExpired = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -324,10 +326,12 @@ async function loadCurrentUser() {
 
         console.error("No fue posible recuperar la sesión:", error);
 
-        if (error?.status === 401 || error?.status === 403) {
+        if (error?.status >= 400 && error?.status < 500) {
             clearSession();
 
             currentUser = null;
+
+            document.dispatchEvent(new CustomEvent("session:expired"));
 
             return null;
         }
@@ -343,9 +347,13 @@ async function loadCurrentUser() {
  */
 async function handleAuthenticated(user) {
 
+    handlingSessionExpired = false;
+
     currentUser = user;
 
     renderHeader(currentUser);
+
+    scheduleSessionExpiration();
 
     await loadProducts();
 
@@ -357,19 +365,23 @@ async function handleAuthenticated(user) {
  */
 async function handleSessionExpired() {
 
+    if (handlingSessionExpired) return;
+
+    handlingSessionExpired = true;
+
     clearSession();
 
     currentUser = null;
 
     closeModal();
 
+    document.dispatchEvent(new CustomEvent("app:clear-operation-error"));
+
     renderHeader(null);
 
-    await loadProducts();
-
-    openLogin(
-        "Tu sesión ha expirado.",
-        "Inicia sesión nuevamente para continuar."
+    toast(
+        "Tu sesión ha terminado. Inicia sesión nuevamente para continuar.",
+        "info"
     );
 }
 
@@ -383,6 +395,8 @@ async function handleLoggedOut() {
     currentUser = null;
 
     closeModal();
+
+    document.dispatchEvent(new CustomEvent("app:clear-operation-error"));
 
     renderHeader(null);
 
@@ -539,6 +553,20 @@ function configureGlobalEvents() {
     // Cierre de sesión manual.
     document.addEventListener("session:logout", handleLoggedOut);
 
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            scheduleSessionExpiration();
+        }
+    });
+
+    window.addEventListener("focus", scheduleSessionExpiration);
+
+    window.addEventListener("storage", (event) => {
+        if (event.key === "accessToken" || event.key === "refreshToken") {
+            scheduleSessionExpiration();
+        }
+    });
+
     // Errores globales de la aplicación.
     document.addEventListener("app:error", (event) => {
 
@@ -566,6 +594,8 @@ async function bootstrap() {
     currentUser = await loadCurrentUser();
 
     renderHeader(currentUser);
+
+    scheduleSessionExpiration();
 
     await loadProducts();
 

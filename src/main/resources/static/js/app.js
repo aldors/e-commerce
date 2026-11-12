@@ -16,12 +16,62 @@ export const getAccessToken = () => localStorage.getItem("accessToken");
 export const getRefreshToken = () => localStorage.getItem("refreshToken");
 export const hasSession = () => Boolean(getAccessToken() || getRefreshToken());
 
+let sessionExpirationTimer = null;
+const MAX_TIMEOUT = 2147483647;
+
+function decodeTokenPayload(token) {
+    if (!token) return null;
+    try {
+        const part = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+        const json = new TextDecoder().decode(Uint8Array.from(atob(part.padEnd(part.length + (4 - part.length % 4) % 4, "=")), c => c.charCodeAt(0)));
+        return JSON.parse(json);
+    } catch { return null; }
+}
+
+function getTokenExpiration(token) {
+    return Number(decodeTokenPayload(token)?.exp) || 0;
+}
+
+function clearSessionExpirationTimer() {
+    if (sessionExpirationTimer === null) return;
+    clearTimeout(sessionExpirationTimer);
+    sessionExpirationTimer = null;
+}
+
+function expireSessionNow() {
+    if (!hasSession()) return;
+    clearSession();
+    document.dispatchEvent(new CustomEvent("session:expired"));
+}
+
+export function scheduleSessionExpiration() {
+    clearSessionExpirationTimer();
+    const expiresAt = (getTokenExpiration(getRefreshToken()) || getTokenExpiration(getAccessToken())) * 1000;
+    if (!expiresAt) return;
+    const remaining = expiresAt - Date.now();
+    if (remaining <= 0) {
+        expireSessionNow();
+        return;
+    }
+    const delay = Math.min(remaining, MAX_TIMEOUT);
+    sessionExpirationTimer = setTimeout(() => {
+        sessionExpirationTimer = null;
+        if (Date.now() >= expiresAt) {
+            expireSessionNow();
+            return;
+        }
+        scheduleSessionExpiration();
+    }, delay);
+}
+
 export function saveSession({ accessToken, refreshToken } = {}) {
     if (accessToken) localStorage.setItem("accessToken", accessToken);
     if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+    scheduleSessionExpiration();
 }
 
 export function clearSession() {
+    clearSessionExpirationTimer();
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
 }
@@ -29,14 +79,11 @@ export function clearSession() {
 export function getSession() {
     const token = getAccessToken();
     if (!token) return null;
-    try {
-        const part = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-        const json = new TextDecoder().decode(Uint8Array.from(atob(part.padEnd(part.length + (4 - part.length % 4) % 4, "=")), c => c.charCodeAt(0)));
-        const payload = JSON.parse(json);
-        const roles = (payload.roles || []).map(role => role.authority || role);
-        const isAdmin = roles.includes("ROLE_ADMIN");
-        return { nombre: payload.nombre || payload.sub || "Usuario", email: payload.sub || "", roles, isAdmin, rol: isAdmin ? "ADMIN" : "USER" };
-    } catch { return null; }
+    const payload = decodeTokenPayload(token);
+    if (!payload) return null;
+    const roles = (payload.roles || []).map(role => role.authority || role);
+    const isAdmin = roles.includes("ROLE_ADMIN");
+    return { nombre: payload.nombre || payload.sub || "Usuario", email: payload.sub || "", roles, isAdmin, rol: isAdmin ? "ADMIN" : "USER" };
 }
 
 async function readBody(response) {
@@ -56,7 +103,15 @@ export async function refreshAccessToken() {
         } catch { throw new ApiError("No se pudo conectar", ["Verifica que el servidor esté disponible."], 0); }
         const body = await readBody(response);
         if (!response.ok || !body?.success || !body?.data?.accessToken) {
-            throw new ApiError(body?.message || "Tu sesión venció", body?.errors || ["Inicia sesión de nuevo para continuar."], response.status);
+            const sessionInvalid = !response.ok
+                ? response.status >= 400 && response.status < 500
+                : true;
+
+            throw new ApiError(
+                sessionInvalid ? "Tu sesión venció" : (body?.message || "No se pudo renovar la sesión"),
+                sessionInvalid ? ["Inicia sesión de nuevo para continuar."] : (body?.errors || ["Inténtalo de nuevo en unos momentos."]),
+                sessionInvalid ? 401 : response.status
+            );
         }
         saveSession(body.data);
         return body.data.accessToken;
@@ -85,7 +140,7 @@ export async function apiJson(path, options = {}) {
         if (error?.status !== 401 || !auth || !retry) throw error;
         try { return await request(await refreshAccessToken()); }
         catch (refreshError) {
-            if (refreshError?.status === 401) {
+            if (refreshError?.status >= 400 && refreshError?.status < 500) {
                 clearSession();
                 document.dispatchEvent(new CustomEvent("session:expired"));
             }
